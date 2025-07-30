@@ -1,0 +1,324 @@
+/* Fuentes personalizadas */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+/* Estilos base */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans text-gray-800 bg-gray-50;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Títulos */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-oswald font-bold leading-tight tracking-tight text-primary-800;
+  }
+
+  h1 { @apply text-4xl md:text-5xl lg:text-6xl; }
+  h2 { @apply text-3xl md:text-4xl; }
+  h3 { @apply text-2xl md:text-3xl; }
+  h4 { @apply text-xl md:text-2xl; }
+
+  /* Enlaces */
+  a {
+    @apply text-primary-600 hover:text-primary-800 transition-colors duration-200;
+  }
+}
+
+/* Componentes */
+@layer components {
+  /* Botones */
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md transition-all duration-200;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 shadow-md hover:shadow-lg;
+  }
+
+  .btn-outline {
+    @apply border-2 border-primary-600 text-primary-600 hover:bg-primary-50;
+  }
+  
+  .btn-accent {
+    @apply bg-secondary-500 text-white hover:bg-secondary-600 shadow-md hover:shadow-lg;
+  }
+
+  /* Formularios */
+  input[type="text"],
+  input[type="email"],
+  textarea,
+  select {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent;
+  }
+
+  /* Tarjetas */
+  .card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden;
+  }
+
+  .card-header {
+    @apply px-6 py-4 border-b border-gray-200 bg-gray-50;
+  }
+
+  .card-body {
+    @apply p-6;
+  }
+
+  .card-footer {
+    @apply px-6 py-4 bg-gray-50 border-t border-gray-200;
+  }
+
+  /* Alertas */
+  .alert {
+    @apply p-4 rounded-lg mb-4 text-sm;
+  }
+
+  .alert-success {
+    @apply bg-green-100 text-green-700;
+  }
+
+  .alert-error {
+    @apply bg-red-100 text-red-700;
+  }
+
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-primary {
+    @apply bg-primary-light text-primary-darker;
+  }
+
+  /* Tooltips */
+  .tooltip {
+    @apply relative;
+  }
+
+  .tooltip-text {
+    @apply invisible absolute z-10 px-3 py-2 text-sm text-white bg-primary-darker rounded shadow-lg opacity-0 transition-opacity duration-200;
+    min-width: 120px;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .tooltip:hover .tooltip-text {
+    @apply visible opacity-100;
+  }
+}
+
+/* Utilidades */
+@layer utilities {
+  /* Animaciones */
+  .fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .card-hover {
+    @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg;
+  }
+
+  /* Scroll personalizado */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #6e696e #f3f4f6;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-primary rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary-dark;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Estilos específicos para el layout */
+.layout-container {
+  @apply min-h-screen flex flex-col;
+}
+
+.main-content {
+  @apply flex-grow;
+}
+
+/* Estilos para el modo oscuro */
+.dark {
+  background-color: #2b2d31;
+  color: white;
+}
+
+.dark .card {
+  background-color: #1f2937;
+  border: 1px solid rgba(110, 105, 110, 0.2);
+}
+
+.dark .card-header,
+.dark .card-footer {
+  background-color: #2b2d31;
+  border-bottom: 1px solid rgba(169, 172, 180, 0.2);
+}
+
+/* Estilos para el menú móvil */
+.mobile-menu {
+  @apply hidden;
+}
+
+.mobile-menu.active {
+  @apply block;
+}
+
+/* Estilos para el acordeón */
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+/* Estilos para el modal */
+.modal-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+}
+
+.modal-content {
+  @apply bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para el loader */
+.loader {
+  @apply w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin;
+}
+
+/* Estilos para las tablas */
+table {
+  @apply min-w-full divide-y divide-gray-200;
+}
+
+th {
+  @apply px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+}
+
+td {
+  @apply px-6 py-4 whitespace-nowrap text-sm text-gray-500;
+}
+
+/* Estilos para los mensajes flash */
+.flash-message {
+  @apply fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para los placeholders de carga */
+.placeholder-loading {
+  @apply bg-gray-200 animate-pulse rounded;
+}
+
+/* Estilos para los avatares */
+.avatar {
+  @apply rounded-full overflow-hidden bg-gray-200 flex items-center justify-center;
+}
+
+.avatar-sm {
+  @apply w-8 h-8;
+}
+
+.avatar-md {
+  @apply w-12 h-12;
+}
+
+.avatar-lg {
+  @apply w-16 h-16;
+}
+
+/* Estilos para los dropdowns */
+.dropdown {
+  @apply relative inline-block;
+}
+
+.dropdown-content {
+  @apply hidden absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg z-50;
+}
+
+.dropdown:hover .dropdown-content {
+  @apply block;
+}
+
+/* Estilos para los campos de formulario con error */
+.input-error {
+  @apply border-red-500 focus:ring-red-500 focus:border-red-500;
+}
+
+/* Estilos para los botones deshabilitados */
+.btn:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Estilos para los enlaces de navegación activos */
+.nav-link-active {
+  @apply text-accent border-b-2 border-accent;
+}
+
+/* Estilos para los mensajes */
+.message {
+  @apply p-4 mb-4 text-sm rounded-lg;
+}
+
+.message-success {
+  @apply bg-green-100 text-green-700;
+}
+
+.message-error {
+  @apply bg-red-100 text-red-700;
+}
+
+.message-warning {
+  @apply bg-yellow-100 text-yellow-700;
+}
+
+.message-info {
+  @apply bg-blue-100 text-blue-700;
+}

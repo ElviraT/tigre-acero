@@ -1,0 +1,314 @@
+---
+// Datos del slide principal con imagen
+const mainSlide = {
+  id: 1,
+  title: 'CLUB DE HAPKIDO',
+  subtitle: 'TIGRE DE ACERO',
+  description: 'Descubre el arte marcial coreano del Hapkido. Disciplina, defensa personal y desarrollo personal.',
+  buttonText: '¡Inscríbete Ahora!',
+  buttonLink: '#inscripciones'
+};
+
+// Datos de los slides de instructores
+const instructorSlides = [
+  {
+    id: 2,
+    title: 'INSTRUCTOR CERTIFICADO',
+    subtitle: 'HAPKIDO & DEFENSA PERSONAL',
+    bgGradient: 'bg-gradient-to-br from-red-900 via-black to-red-900',
+    buttonText: 'Conoce Más',
+    buttonLink: '#instructores'
+  },
+  {
+    id: 3,
+    title: 'ENTRENAMIENTO PROFESIONAL',
+    subtitle: 'ARTES MARCIALES TRADICIONALES',
+    bgGradient: 'bg-gradient-to-bl from-black via-red-900 to-black',
+    buttonText: 'Conoce Más',
+    buttonLink: '#instructores'
+  }
+];
+---
+
+<!-- Hero Slider - Ajustado para ir justo después del menú -->
+<div class="hero-slider relative w-full h-[90vh] min-h-[600px] max-h-[900px] overflow-hidden bg-gray-900 -mt-20 pt-20">
+  <!-- Slides -->
+  <div class="relative h-full w-full">
+    {/* Slide principal con imagen */}
+    <div class="hero-slide absolute inset-0 w-full h-full transition-opacity duration-1000 opacity-100 flex items-center justify-center overflow-hidden" data-index="0">
+      <div class="absolute inset-0 z-0">
+        <img
+          src="/images/hero/slider1.png"
+          alt="Clase de Hapkido"
+          class="w-screen h-full object-cover object-top"
+          loading="lazy"
+        />
+        <div class="absolute inset-0 bg-black/50"></div>
+      </div>
+      
+      <div class="container mx-auto h-full flex items-center px-3 relative z-10">
+        <div class="max-w-2xl text-white backdrop-blur-sm bg-black/30 p-8 rounded-lg">
+          <span class="inline-block bg-red-500 text-black text-sm font-bold px-3 py-1 mb-4 rounded-full">BIENVENIDOS</span>
+          <h1 class="text-5xl md:text-7xl font-bold mb-4 font-oswald">
+            {mainSlide.title}<br>
+            <span class="text-red-400">{mainSlide.subtitle}</span>
+          </h1>
+          <p class="text-xl mb-8 text-gray-200">{mainSlide.description}</p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a
+              href={mainSlide.buttonLink}
+              class="bg-red-500 hover:bg-red-600 text-black font-bold py-3 px-8 rounded-full text-center transition-colors"
+            >
+              {mainSlide.buttonText}
+            </a>
+            <a
+              href="#clases"
+              class="border-2 border-white hover:bg-white hover:bg-opacity-10 text-white font-bold py-3 px-8 rounded-full text-center transition-colors"
+            >
+              Ver Clases
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Slides de instructores */}
+    {instructorSlides.map((slide, index) => (
+      <div 
+        class="hero-slide absolute inset-0 w-full h-full transition-opacity duration-1000 opacity-0 flex items-center justify-center overflow-hidden" 
+        data-index={index + 1}
+      >
+        <div class="absolute inset-0 z-0">
+          <div class={`w-full h-full ${slide.bgGradient} flex items-center justify-center`}>
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="relative z-10 text-center p-8 max-w-2xl">
+              <div class="w-40 h-40 mx-auto mb-6 bg-gradient-to-br from-red-900 to-black rounded-full flex items-center justify-center">
+                <span class="text-4xl text-red-300">👊</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="container mx-auto h-full flex items-center px-3 relative z-10">
+          <div class="max-w-2xl text-white text-center">
+            <h1 class="text-5xl md:text-7xl font-bold mb-4 font-oswald">
+              {slide.title}<br>
+              <span class="text-red-400">{slide.subtitle}</span>
+            </h1>
+            <p class="text-xl mb-8 text-gray-200">{slide.description}</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href={slide.buttonLink}
+                class="bg-red-500 hover:bg-red-600 text-black font-bold py-3 px-8 rounded-full text-center transition-colors"
+              >
+                {slide.buttonText}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Controles del slider -->
+  <button
+    id="prevSlide"
+    class="absolute left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition-all z-10 w-10 h-10 flex items-center justify-center"
+    aria-label="Anterior"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <button
+    id="nextSlide"
+    class="absolute right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition-all z-10 w-10 h-10 flex items-center justify-center"
+    aria-label="Siguiente"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+
+  <!-- Indicadores de paginación -->
+  <div class="pagination absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
+    {[mainSlide, ...instructorSlides].map((_, index) => (
+      <button
+        class="w-3 h-3 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100 transition-all"
+        data-index={index}
+        aria-label={`Ir a la diapositiva ${index + 1}`}
+      ></button>
+    ))}
+  </div>
+</div>
+
+<script>
+  // Wait for DOM to be ready
+  document.addEventListener('DOMContentLoaded', () => {
+    class HeroSlider {
+      constructor() {
+        // Initialize properties
+        this.currentSlide = 0;
+        this.slides = [];
+        this.dots = [];
+        this.autoPlayInterval = null;
+        this.slideChangeDelay = 5000; // 5 seconds
+        this.slider = document.querySelector('.hero-slider');
+        this.prevBtn = document.getElementById('prevSlide');
+        this.nextBtn = document.getElementById('nextSlide');
+        this.paginationDots = [];
+        this.currentIndex = 0;
+        this.slides = Array.from(document.querySelectorAll('.hero-slide'));
+        this.totalSlides = this.slides.length;
+        this.paginationDots = Array.from(document.querySelectorAll('.pagination button'));
+
+        // Initialize the slider
+        this.init();
+      }
+
+      init() {
+        // Mostrar el primer slide
+        this.showSlide(this.currentIndex);
+
+        // Event listeners para controles
+        if (this.prevBtn) this.prevBtn.addEventListener('click', () => this.prev());
+        if (this.nextBtn) this.nextBtn.addEventListener('click', () => this.next());
+
+        // Event listeners para paginación
+        this.paginationDots.forEach((dot, index) => {
+          dot.addEventListener('click', () => this.goTo(index));
+        });
+
+        // Pausar autoplay al hacer hover
+        if (this.slider) {
+          this.slider.addEventListener('mouseenter', () => this.pauseAutoPlay());
+          this.slider.addEventListener('mouseleave', () => this.startAutoPlay());
+        }
+
+        // Iniciar autoplay
+        this.startAutoPlay();
+      }
+
+      showSlide(index) {
+        // Asegurarse de que el índice esté dentro de los límites
+        if (index < 0) index = this.totalSlides - 1;
+        if (index >= this.totalSlides) index = 0;
+
+        // Ocultar todos los slides
+        this.slides.forEach(slide => {
+          slide.style.opacity = '0';
+          slide.style.pointerEvents = 'none';
+        });
+
+        // Mostrar el slide actual
+        this.slides[index].style.opacity = '1';
+        this.slides[index].style.pointerEvents = 'auto';
+
+        // Actualizar indicadores
+        this.updatePagination(index);
+
+        // Actualizar índice actual
+        this.currentIndex = index;
+      }
+
+      next() {
+        let newIndex = (this.currentIndex + 1) % this.totalSlides;
+        this.showSlide(newIndex);
+      }
+
+      prev() {
+        let newIndex = (this.currentIndex - 1 + this.totalSlides) % this.totalSlides;
+        this.showSlide(newIndex);
+      }
+
+      goTo(index) {
+        if (index >= 0 && index < this.totalSlides) {
+          this.showSlide(index);
+        }
+      }
+
+      updatePagination(index) {
+        this.paginationDots.forEach((dot, i) => {
+          if (i === index) {
+            dot.classList.add('bg-red-500', 'w-8');
+            dot.classList.remove('bg-opacity-50');
+          } else {
+            dot.classList.remove('bg-red-500', 'w-8');
+            dot.classList.add('bg-opacity-50');
+          }
+        });
+      }
+
+      startAutoPlay() {
+        this.pauseAutoPlay();
+        // Usar window.setInterval para el tipado correcto
+        this.autoPlayInterval = window.setInterval(() => {
+          this.next();
+        }, 5000);
+      }
+
+      pauseAutoPlay() {
+        if (this.autoPlayInterval) {
+          clearInterval(this.autoPlayInterval);
+          this.autoPlayInterval = null;
+        }
+      }
+    }
+
+    // Inicializar el slider cuando el DOM esté completamente cargado
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      window.heroSlider = new HeroSlider();
+    });
+  } else {
+    window.heroSlider = new HeroSlider();
+  }
+  });
+</script>
+
+<style>
+  .font-oswald {
+    font-family: 'Oswald', sans-serif;
+  }
+
+  /* Asegurar que el slider ocupe toda la altura de la pantalla */
+  @media (max-height: 640px) {
+    .hero-slider {
+      height: 100vh;
+    }
+  }
+
+  /* Transición suave para los slides */
+  .hero-slide {
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  /* Mejorar la legibilidad del texto sobre imágenes */
+  .hero-slide h1,
+  .hero-slide p {
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Ajustes para móviles */
+  @media (max-width: 640px) {
+    .hero-slide h1 {
+      font-size: 2.5rem;
+      line-height: 1.2;
+    }
+
+    .hero-slide p {
+      font-size: 1rem;
+    }
+
+    .hero-slide .flex {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .hero-slide a {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>

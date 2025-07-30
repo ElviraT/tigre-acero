@@ -1,0 +1,38 @@
+{
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "tailwindCSS.includeLanguages": {
+    "astro": "html"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    "class:\\s*\"([^\"]*)\"",
+    "class=\"([^\"]*)\"",
+    "class: ({[^}]*})",
+    "class=({[^}]*})",
+    "class=\\s*'([^']*)'",
+    "class:\\s*'([^']*)'"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "files.associations": {
+    "*.astro": "html"
+  },
+  "emmet.includeLanguages": {
+    "astro-html": "html",
+    "astro": "html"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true,
+  "editor.tabSize": 2,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "css.lint.unknownAtRules": "ignore"
+}

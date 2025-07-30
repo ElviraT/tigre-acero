@@ -1,0 +1,397 @@
+---
+// Importar estilos globales
+import '../styles/global.css';
+
+// Importar componentes
+import Layout from '../layouts/Layout.astro';
+import HeroSlider from '../components/HeroSlider.astro';
+import AboutSection from '../components/AboutSection.astro';
+import InstructorCard from '../components/InstructorCard.astro';
+import ImageGallery from '../components/ImageGallery.astro';
+import YouTubeVideos from '../components/YouTubeVideos.astro';
+
+import { IMAGE_CONFIG } from '../config/images';
+
+// Datos de ejemplo para instructores
+const instructors = [
+  {
+    id: 1,
+    name: 'Maestro Juan Pérez',
+    rank: '5to Dan',
+    image: IMAGE_CONFIG.instructors.list[0].url,
+    bio: 'Con más de 20 años de experiencia en Hapkido, el Maestro Juan es fundador del club y especialista en defensa personal.'
+  },
+  {
+    id: 2,
+    name: 'Instructora Ana García',
+    rank: '3er Dan',
+    image: IMAGE_CONFIG.instructors.list[1].url,
+    bio: 'Campeona nacional en varias ocasiones, la instructora Ana se especializa en técnicas de patadas y competición.'
+  },
+  {
+    id: 3,
+    name: 'Instructor Carlos López',
+    rank: '4to Dan',
+    image: IMAGE_CONFIG.instructors.list[2].url,
+    bio: 'Experto en técnicas de llaves y defensa personal, el instructor Carlos tiene amplia experiencia en seminarios internacionales.'
+  }
+];
+
+// Imágenes para la galería
+const galleryImages = [
+  // Imágenes de WhatsApp
+  { id: 'whatsapp-1', src: '/WhatsApp Image 2025-07-30 at 8.38.59 AM.jpeg', alt: 'Entrenamiento de Hapkido 1' },
+  { id: 'whatsapp-2', src: '/WhatsApp Image 2025-07-30 at 8.39.03 AM.jpeg', alt: 'Entrenamiento de Hapkido 2' },
+  { id: 'whatsapp-3', src: '/WhatsApp Image 2025-07-30 at 8.39.04 AM.jpeg', alt: 'Entrenamiento de Hapkido 3' },
+  { id: 'whatsapp-4', src: '/WhatsApp Image 2025-07-30 at 8.39.09 AM (1).jpeg', alt: 'Entrenamiento de Hapkido 4' },
+  { id: 'whatsapp-5', src: '/WhatsApp Image 2025-07-30 at 8.39.09 AM.jpeg', alt: 'Entrenamiento de Hapkido 5' },
+  { id: 'whatsapp-6', src: '/WhatsApp Image 2025-07-30 at 8.41.00 AM.jpeg', alt: 'Entrenamiento de Hapkido 6' },
+  { id: 'whatsapp-7', src: '/WhatsApp Image 2025-07-30 at 8.41.01 AM (1).jpeg', alt: 'Entrenamiento de Hapkido 7' },
+  { id: 'whatsapp-8', src: '/WhatsApp Image 2025-07-30 at 8.46.14 AM.jpeg', alt: 'Entrenamiento de Hapkido 8' },
+  
+  // Imágenes con prefijo IMG
+  { id: 'img-1', src: '/IMG-20220605-WA0094.jpg', alt: 'Clase de Hapkido 1' },
+  { id: 'img-2', src: '/IMG-20220605-WA0104.jpg', alt: 'Clase de Hapkido 2' },
+  { id: 'img-3', src: '/IMG-20220917-WA0054.jpg', alt: 'Clase de Hapkido 3' },
+  { id: 'img-4', src: '/IMG_20220707_110755_836.jpg', alt: 'Clase de Hapkido 4' },
+  { id: 'img-5', src: '/IMG_20220707_114940_5.jpg', alt: 'Clase de Hapkido 5' },
+  { id: 'img-6', src: '/IMG_20220917_151948_124.jpg', alt: 'Clase de Hapkido 6' },
+  { id: 'img-7', src: '/IMG_20220917_183852_289.jpg', alt: 'Clase de Hapkido 7' },
+];
+---
+
+<Layout title="Inicio">
+  <!-- Hero Section with Slider -->
+  <HeroSlider />
+
+  <!-- Sección Sobre Nosotros -->
+  <AboutSection />
+
+  <!-- Sección de Inscripciones -->
+  <section id="inscripciones" class="py-16 bg-gradient-to-r from-red-500 to-beige text-white">
+    <div class="container mx-auto px-6 text-center">
+      <h2 class="text-4xl font-bold mb-6 font-oswald">¡INSCRIPCIONES ABIERTAS!</h2>
+      <p class="text-xl mb-8 max-w-3xl mx-auto">Únete a nuestra familia y comienza tu viaje en el Hapkido. Clases para todas las edades y niveles.</p>
+      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mt-12">
+        <div class="bg-white/20 p-6 rounded-xl backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow duration-300 border border-white/10">
+          <div class="text-4xl font-bold mb-4">$1,200</div>
+          <h3 class="text-xl font-bold mb-2">Mensualidad</h3>
+          <p class="mb-4">Acceso ilimitado a clases regulares</p>
+          <ul class="text-left space-y-2 mb-6">
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Clases ilimitadas
+            </li>
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Entrenamiento físico
+            </li>
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Técnicas básicas
+            </li>
+          </ul>
+          <button class="w-full bg-black hover:bg-gray-900 text-white font-bold py-3 px-6 rounded-full transition-colors">
+            Inscribirse Ahora
+          </button>
+        </div>
+
+        <div class="bg-white/30 p-6 rounded-xl backdrop-blur-sm transform scale-105 shadow-xl hover:shadow-2xl transition-shadow duration-300 border-2 border-red-400 relative">
+          <div class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold px-3 py-1 transform translate-x-2 -translate-y-2 rounded-full">¡MÁS POPULAR!</div>
+          <div class="text-4xl font-bold mb-4">$3,000</div>
+          <h3 class="text-xl font-bold mb-2">Paquetón Familiar</h3>
+          <p class="mb-4">Para 3 o más integrantes de la misma familia</p>
+          <ul class="text-left space-y-2 mb-6">
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Para 3 o más familiares
+            </li>
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Ahorro del 20%
+            </li>
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Clases ilimitadas para todos
+            </li>
+          </ul>
+          <button class="w-full bg-black hover:bg-gray-900 text-white font-bold py-3 px-6 rounded-full transition-colors">
+            Inscribir Familia
+          </button>
+        </div>
+
+        <div class="bg-white/20 p-6 rounded-xl backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow duration-300 border border-white/10">
+          <div class="text-4xl font-bold mb-4">$500</div>
+          <h3 class="text-xl font-bold mb-2">Clase de Prueba</h3>
+          <p class="mb-4">Ven y conócenos sin compromiso</p>
+          <ul class="text-left space-y-2 mb-6">
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              1 clase de prueba
+            </li>
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Sin compromiso
+            </li>
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Material incluido
+            </li>
+          </ul>
+          <button class="w-full bg-white hover:bg-gray-100 text-black font-bold py-3 px-6 rounded-full transition-colors">
+            Agendar Clase
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección de Instructores -->
+  <section id="instructores" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4 font-oswald">NUESTROS INSTRUCTORES</h2>
+        <div class="w-24 h-1 bg-red-500 mx-auto"></div>
+        <p class="mt-6 text-gray-600 max-w-2xl mx-auto">Contamos con un equipo de instructores altamente calificados y comprometidos con tu desarrollo en el arte marcial del Hapkido.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {instructors.map(instructor => (
+          <InstructorCard
+            name={instructor.name}
+            rank={instructor.rank}
+            image={instructor.image}
+            bio={instructor.bio}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección de Galería -->
+  <section id="galeria" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4 font-oswald">GALERÍA</h2>
+        <div class="w-24 h-1 bg-red-500 mx-auto"></div>
+        <p class="mt-6 text-gray-600 max-w-2xl mx-auto">Momentos capturados en nuestras clases, torneos y eventos especiales.</p>
+      </div>
+
+      <ImageGallery images={galleryImages} />
+
+      <div class="text-center mt-12">
+        <button class="bg-black hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-full transition-colors inline-flex items-center">
+          Ver más fotos
+          <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección de Videos de YouTube -->
+  <YouTubeVideos />
+
+  <!-- Sección de Contacto -->
+  <section id="contacto" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+      <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="md:flex">
+          <div class="md:w-1/2 bg-red-500 p-12 text-white">
+            <h2 class="text-3xl font-bold mb-6 font-oswald">CONTÁCTANOS</h2>
+            <p class="mb-8">¿Tienes alguna pregunta? Estamos aquí para ayudarte. Completa el formulario y nos pondremos en contacto contigo a la brevedad.</p>
+
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 mt-1">
+                  <svg class="h-6 w-6 text-red-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm font-medium">Dirección:</p>
+                  <p class="text-sm">Av. Principal #123, Colonia Centro, Ciudad</p>
+                </div>
+              </div>
+
+              <div class="flex items-center">
+                <div class="flex-shrink-0">
+                  <svg class="h-6 w-6 text-red-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm font-medium">Teléfono:</p>
+                  <p class="text-sm">+52 123 456 7890</p>
+                </div>
+              </div>
+
+              <div class="flex items-center">
+                <div class="flex-shrink-0">
+                  <svg class="h-6 w-6 text-red-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm font-medium">Email:</p>
+                  <p class="text-sm">info@tigredeacero.com</p>
+                </div>
+              </div>
+
+              <div class="flex items-center">
+                <div class="flex-shrink-0">
+                  <svg class="h-6 w-6 text-red-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm font-medium">Horario:</p>
+                  <p class="text-sm">Lunes a Viernes: 7:00 AM - 9:00 PM</p>
+                  <p class="text-sm">Sábados: 8:00 AM - 2:00 PM</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="md:w-1/2 p-12">
+            <form class="space-y-6">
+              <div>
+                <label for="name" class="block text-sm font-medium text-gray-700">Nombre completo</label>
+                <input type="text" id="name" name="name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500">
+              </div>
+
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+                <input type="email" id="email" name="email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500">
+              </div>
+
+              <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                <input type="tel" id="phone" name="phone" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500">
+              </div>
+
+              <div>
+                <label for="message" class="block text-sm font-medium text-gray-700">Mensaje</label>
+                <textarea id="message" name="message" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500"></textarea>
+              </div>
+
+              <div>
+                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                  Enviar mensaje
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .font-oswald {
+    font-family: 'Oswald', sans-serif;
+  }
+
+  /* Animación para las tarjetas de precios */
+  .price-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .price-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Estilos para el mapa */
+  .map-container {
+    position: relative;
+    overflow: hidden;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  }
+
+  .responsive-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* Estilos para la galería */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .gallery-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+  }
+
+  .gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    aspect-ratio: 1;
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .gallery-item:hover img {
+    transform: scale(1.05);
+  }
+
+  .gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .gallery-item:hover .gallery-overlay {
+    opacity: 1;
+  }
+
+  .gallery-icon {
+    color: white;
+    font-size: 2rem;
+  }
+</style>

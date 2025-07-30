@@ -1,0 +1,22 @@
+# robots.txt para Club de Hapkido Tigre de Acero
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /*.xml$
+
+# Sitemap
+Sitemap: https://tigredeacero.com/sitemap.xml
+
+# Crawl-delay: 10
+
+# User-agent: Googlebot-Image
+# Allow: /images/
+
+# User-agent: AdsBot-Google
+# Allow: /
+
+# User-agent: Googlebot-Mobile
+# Allow: /

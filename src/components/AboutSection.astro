@@ -1,0 +1,106 @@
+---
+interface AboutProps {
+  title?: string;
+  subtitle?: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  sections: {
+    title?: string;
+    content: string;
+    isHighlighted?: boolean;
+  }[];
+  ctaText?: string;
+  ctaLink?: string;
+  showImagePlaceholder?: boolean;
+}
+
+const {
+  title = 'NUESTRA HISTORIA',
+  subtitle = 'Conoce más sobre nosotros',
+  imageUrl = '',
+  imageAlt = 'Instructores de Tigre de Acero',
+  sections = [
+    {
+      content: 'El Club de Hapkido Tigre de Acero nació en 2010 de la pasión compartida por las artes marciales de tres instructores con décadas de experiencia combinada. Lo que comenzó como un pequeño dojo en un garaje se ha convertido en una de las escuelas de Hapkido más respetadas de la región.'
+    },
+    {
+      content: 'Nuestra misión es preservar las tradiciones del Hapkido tradicional mientras adaptamos nuestras enseñanzas a las necesidades del mundo moderno. Creemos en el desarrollo integral de nuestros estudiantes, fomentando no solo habilidades marciales, sino también valores como el respeto, la disciplina y la superación personal.'
+    },
+    {
+      title: 'Nuestro Compromiso',
+      content: 'En Tigre de Acero, cada estudiante es parte de nuestra familia. Nos enorgullece ofrecer un ambiente de aprendizaje seguro, inclusivo y desafiante para todas las edades y niveles de habilidad.',
+      isHighlighted: true
+    }
+  ],
+  ctaText = 'Conoce a nuestros instructores',
+  ctaLink = '#instructores',
+  showImagePlaceholder = true
+} = Astro.props;
+---
+
+<section id="sobre-nosotros" class="py-16 md:py-24 bg-white">
+  <div class="container mx-auto px-4 sm:px-6">
+    <div class="flex flex-col md:flex-row items-center gap-8 lg:gap-12">
+      <!-- Columna de imagen -->
+      <div class="w-full md:w-5/12 lg:w-1/2 relative">
+        <div class="relative rounded-xl overflow-hidden shadow-2xl aspect-[4/3] bg-white flex items-center justify-center p-8">
+          <img 
+            src="/images/logo.png" 
+            alt="Logo de Tigre de Acero Hapkido"
+            class="w-full h-auto max-h-full object-contain"
+            loading="lazy"
+          />
+        </div>
+      </div>
+      
+      <!-- Columna de contenido -->
+      <div class="w-full md:w-7/12 lg:w-1/2">
+        {subtitle && (
+          <span class="text-red-600 font-semibold text-sm uppercase tracking-wider mb-2 block">
+            {subtitle}
+          </span>
+        )}
+        
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-oswald">
+          {title}
+        </h2>
+        
+        <div class="space-y-6">
+          {sections.map((section, index) => (
+            <div 
+              class={`${
+                section.isHighlighted 
+                  ? 'bg-gray-50 p-6 rounded-lg border-l-4 border-red-500' 
+                  : ''
+              }`}
+            >
+              {section.title && (
+                <h3 class={`font-bold mb-3 ${
+                  section.isHighlighted 
+                    ? 'text-xl font-oswald text-gray-900' 
+                    : 'text-lg text-gray-800'
+                }`}>
+                  {section.title}
+                </h3>
+              )}
+              <p class="text-gray-700 leading-relaxed">
+                {section.content}
+              </p>
+            </div>
+          ))}
+          
+          {ctaText && ctaLink && (
+            <div class="pt-2">
+              <a 
+                href={ctaLink}
+                class="inline-block bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-full transition-colors duration-300"
+              >
+                {ctaText}
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

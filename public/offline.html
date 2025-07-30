@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estás sin conexión | Club de Hapkido Tigre de Acero</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 500px;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #ff4444;
+      font-family: 'Oswald', sans-serif;
+      margin-bottom: 1rem;
+    }
+    p {
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    .logo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 1.5rem;
+      display: block;
+    }
+    .btn {
+      display: inline-block;
+      background: #ff4444;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .btn:hover {
+      background: #ff0000;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+    }
+    .offline-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #ff4444;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="offline-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z"/>
+      </svg>
+    </div>
+    <img src="/images/logo.png" alt="Tigre de Acero" class="logo">
+    <h1>¡Ups! Estás sin conexión</h1>
+    <p>Parece que no tienes conexión a Internet. Algunas funciones pueden no estar disponibles.</p>
+    <p>Por favor, verifica tu conexión y vuelve a intentarlo.</p>
+    <button class="btn" onclick="window.location.reload()">Reintentar conexión</button>
+  </div>
+
+  <script>
+    // Verificar conexión periódicamente
+    function checkConnection() {
+      if (navigator.onLine) {
+        window.location.reload();
+      }
+    }
+    
+    // Verificar conexión cada 5 segundos
+    setInterval(checkConnection, 5000);
+    
+    // Verificar conexión al cambiar el estado de la red
+    window.addEventListener('online', checkConnection);
+  </script>
+</body>
+</html>

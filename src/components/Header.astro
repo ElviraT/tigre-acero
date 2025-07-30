@@ -1,0 +1,169 @@
+---
+const navigation = [
+  { name: 'Inicio', href: '/' },
+  { name: 'Nosotros', href: '#nosotros' },
+  { name: 'Clases', href: '#clases' },
+  { name: 'Instructores', href: '#instructores' },
+  { name: 'Galería', href: '#galeria' },
+  { name: 'Contacto', href: '#contacto' },
+];
+---
+
+<header class="bg-black text-white shadow-lg fixed top-0 left-0 right-0 z-50">
+  <nav class="container mx-auto px-6 py-4">
+    <div class="flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center space-x-2">
+        <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
+          <!-- <span class="text-2xl font-bold text-black">T</span> -->
+           <img src="images/logo.png" loading="lazy" alt="Tigre de Acero">
+        </div>
+        <div class="text-xl font-bold font-oswald">
+          <span class="block leading-tight">TIGRE DE ACERO</span>
+          <span class="text-sm text-red-400">CLUB DE HAPKIDO</span>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center space-x-8">
+        {navigation.map((item) => (
+          <a
+            href={item.href}
+            class="text-white hover:text-red-400 transition-colors font-oswald font-medium uppercase text-sm"
+          >
+            {item.name}
+          </a>
+        ))}
+        <a
+          href="#inscripciones"
+          class="bg-red-500 hover:bg-red-600 text-black font-bold py-2 px-6 rounded-full transition-colors"
+        >
+          ¡Inscríbete!
+        </a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <div class="md:hidden relative z-50">
+        <button id="mobile-menu-button" class="text-white hover:text-red-400 focus:outline-none" aria-label="Menú">
+          <svg id="menu-icon" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg id="close-icon" class="h-8 w-8 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="md:hidden hidden mt-4 pb-4 bg-black/95 rounded-lg transition-all duration-300 transform -translate-y-2 opacity-0">
+      <div class="flex flex-col space-y-4">
+        {navigation.map((item) => (
+          <a
+            href={item.href}
+            class="block px-3 py-2 text-white hover:bg-gray-800 rounded-md"
+          >
+            {item.name}
+          </a>
+        ))}
+        <a
+          href="#inscripciones"
+          class="block text-center bg-red-500 hover:bg-red-600 text-black font-bold py-2 px-6 rounded-full transition-colors"
+        >
+          ¡Inscríbete!
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Add padding to the top of the body to account for fixed header -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    const closeIcon = document.getElementById('close-icon');
+    
+    function toggleMenu() {
+      const isOpen = mobileMenu.classList.toggle('hidden');
+      
+      if (isOpen) {
+        // Closing menu
+        mobileMenu.classList.remove('opacity-100', 'translate-y-0');
+        mobileMenu.classList.add('opacity-0', '-translate-y-2');
+        menuIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      } else {
+        // Opening menu
+        mobileMenu.classList.remove('opacity-0', '-translate-y-2');
+        mobileMenu.classList.add('opacity-100', 'translate-y-0');
+        menuIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+      }
+    }
+    
+    // Toggle menu on button click
+    mobileMenuButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMenu();
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!mobileMenu.classList.contains('hidden') && 
+          !mobileMenu.contains(e.target) && 
+          !mobileMenuButton.contains(e.target)) {
+        toggleMenu();
+      }
+    });
+    
+    // Close menu when clicking on a link
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        toggleMenu();
+      });
+    });
+  });
+</script>
+
+<style>
+  body {
+    padding-top: 5.5rem; /* Ajusta este valor según la altura de tu encabezado */
+  }
+  
+  @media (max-width: 768px) {
+    body {
+      padding-top: 5rem; /* Un poco menos en móviles */
+    }
+  }
+</style>
+
+<style>
+  .font-oswald {
+    font-family: 'Oswald', sans-serif;
+  }
+
+  @media (max-width: 768px) {
+    .mobile-menu {
+      display: none;
+    }
+    .mobile-menu.active {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  // Toggle mobile menu
+  document.addEventListener('DOMContentLoaded', () => {
+    const menuButton = document.querySelector('button[aria-label="Toggle menu"]');
+    const mobileMenu = document.querySelector('.mobile-menu');
+
+    if (menuButton && mobileMenu) {
+      menuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+  });
+</script>

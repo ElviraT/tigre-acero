@@ -1,0 +1,48 @@
+---
+// No se necesita lógica en el frontmatter para este componente
+---
+
+<!-- Botón flotante para volver al inicio -->
+<button 
+  id="backToTop" 
+  class="fixed bottom-6 right-6 bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 opacity-0 invisible z-50"
+  aria-label="Volver al inicio"
+  title="Volver al inicio"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+  </svg>
+</button>
+
+<script>
+  // Mostrar/ocultar el botón al hacer scroll
+  document.addEventListener('DOMContentLoaded', () => {
+    const backToTopButton = document.getElementById('backToTop');
+    
+    // Mostrar u ocultar el botón según la posición de desplazamiento
+    const toggleBackToTop = () => {
+      if (window.scrollY > 300) {
+        backToTopButton.classList.remove('opacity-0', 'invisible');
+        backToTopButton.classList.add('opacity-100', 'visible');
+      } else {
+        backToTopButton.classList.remove('opacity-100', 'visible');
+        backToTopButton.classList.add('opacity-0', 'invisible');
+      }
+    };
+
+    // Desplazamiento suave al hacer clic
+    backToTopButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    // Escuchar el evento de desplazamiento
+    window.addEventListener('scroll', toggleBackToTop);
+    
+    // Verificar la posición inicial
+    toggleBackToTop();
+  });
+</script>

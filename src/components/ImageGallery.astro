@@ -1,0 +1,404 @@
+---
+// Ruta base para imágenes
+const basePath = '/images/gallery/';
+
+// Imágenes de WhatsApp
+const whatsappImages = [
+  'WhatsApp Image 2025-07-30 at 8.38.59 AM.jpeg',
+  'WhatsApp Image 2025-07-30 at 8.39.03 AM.jpeg',
+  'WhatsApp Image 2025-07-30 at 8.39.04 AM.jpeg',
+  'WhatsApp Image 2025-07-30 at 8.39.09 AM (1).jpeg',
+  'WhatsApp Image 2025-07-30 at 8.39.09 AM.jpeg',
+  'WhatsApp Image 2025-07-30 at 8.41.00 AM.jpeg',
+  'WhatsApp Image 2025-07-30 at 8.41.01 AM (1).jpeg',
+  'WhatsApp Image 2025-07-30 at 8.46.14 AM.jpeg'
+];
+
+// Imágenes que comienzan con IMG
+const imgImages = [
+  'IMG-20220605-WA0094.jpg',
+  'IMG-20220605-WA0104.jpg',
+  'IMG-20220917-WA0054.jpg',
+  'IMG_20220707_110755_836.jpg',
+  'IMG_20220707_114940_5.jpg',
+  'IMG_20220917_151948_124.jpg',
+  'IMG_20220917_183852_289.jpg'
+];
+
+// Función para verificar si una imagen existe
+async function imageExists(url) {
+  try {
+    const response = await fetch(url, { method: 'HEAD' });
+    return response.ok;
+  } catch (error) {
+    console.error(`Error al verificar la imagen ${url}:`, error);
+    return false;
+  }
+}
+
+// Combinar y formatear las imágenes
+const galleryImages = [];
+
+// Agregar imágenes de WhatsApp
+for (const [index, img] of whatsappImages.entries()) {
+  const imgPath = `/${encodeURIComponent(img)}`;
+  galleryImages.push({
+    id: `whatsapp-${index}`,
+    src: imgPath,
+    alt: `Imagen de entrenamiento ${index + 1}`,
+    exists: true // Asumimos que existen, se verificará en el cliente
+  });
+}
+
+// Agregar imágenes IMG
+for (const [index, img] of imgImages.entries()) {
+  const imgPath = `/${encodeURIComponent(img)}`;
+  galleryImages.push({
+    id: `img-${index}`,
+    src: imgPath,
+    alt: `Fotografía de clase ${index + 1}`,
+    exists: true // Asumimos que existen, se verificará en el cliente
+  });
+}
+
+// Usar las imágenes proporcionadas o las de WhatsApp/IMG por defecto
+const { images = galleryImages } = Astro.props;
+
+// Generar un ID único para cada imagen
+const imageIds = images.map((_, i) => `img-${i}-${Math.random().toString(36).substr(2, 9)}`);
+---
+
+<script>
+  function openModal(imgSrc, imgAlt, modalId) {
+    // Crear modal
+    const modal = document.createElement('div');
+    modal.id = modalId;
+    modal.className = 'fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4';
+    modal.innerHTML = `
+      <div class="relative max-w-4xl w-full">
+        <img src="${imgSrc}" alt="${imgAlt}" class="max-h-[80vh] w-full object-contain">
+        <button 
+          class="absolute -top-12 right-0 text-white hover:text-gray-300 focus:outline-none close-modal"
+          aria-label="Cerrar"
+          onclick="document.getElementById('${modalId}').remove(); document.body.style.overflow = 'auto';"
+        >
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    `;
+    
+    // Cerrar al hacer clic fuera de la imagen
+    modal.onclick = function(e) {
+      if (e.target === this) {
+        document.body.removeChild(modal);
+        document.body.style.overflow = 'auto';
+      }
+    };
+    
+    // Cerrar con Escape
+    const handleKeyDown = function(e) {
+      if (e.key === 'Escape') {
+        document.body.removeChild(modal);
+        document.body.style.overflow = 'auto';
+        document.removeEventListener('keydown', handleKeyDown);
+      }
+    };
+    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', handleKeyDown);
+  }
+</script>
+
+<div class="gallery-container relative">
+  <div class="gallery-ribbon">
+    {/* Primera pasada de imágenes */}
+    {images.map((image, index) => (
+      <div 
+        class="gallery-ribbon-item group relative cursor-pointer transition-transform duration-300 hover:scale-105" 
+        onclick={`openModal('${image.src}', '${image.alt}', '${imageIds[index]}')`}
+      >
+        <img 
+          src={image.src} 
+          alt={image.alt}
+          loading="lazy"
+          class="h-64 w-auto object-cover rounded-lg shadow-lg group-hover:shadow-xl transition-all duration-300"
+          onload="this.parentElement.classList.add('loaded')"
+        />
+      </div>
+    ))}
+    
+    {/* Segunda pasada idéntica para el efecto de bucle */}
+    {images.map((image, index) => (
+      <div 
+        class="gallery-ribbon-item group relative cursor-pointer transition-transform duration-300 hover:scale-105" 
+        onclick={`openModal('${image.src}', '${image.alt}', '${imageIds[index]}-duplicate')`}
+      >
+        <img 
+          src={image.src} 
+          alt={image.alt}
+          loading="lazy"
+          class="h-64 w-auto object-cover rounded-lg shadow-lg group-hover:shadow-xl transition-all duration-300"
+          onload="this.parentElement.classList.add('loaded')"
+        />
+      </div>
+    ))}
+  </div>
+  
+  {/* Overlay de gradiente para los bordes */}
+  <div class="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+  <div class="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+</div>
+
+<script>
+  // Iniciar animación de desplazamiento automático
+  document.addEventListener('DOMContentLoaded', () => {
+    const ribbon = document.querySelector('.gallery-ribbon');
+    if (!ribbon) return;
+    
+    // Clonar las imágenes para un desplazamiento continuo
+    const items = ribbon.querySelectorAll('.gallery-ribbon-item');
+    const totalWidth = Array.from(items).reduce((acc, item) => {
+      return acc + item.offsetWidth + 16; // 16px de gap
+    }, 0);
+    
+    // Configurar animación CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes scroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(calc(-${totalWidth / 2}px)); }
+      }
+      .gallery-ribbon {
+        animation: scroll ${items.length * 2}s linear infinite;
+      }
+      .gallery-ribbon:hover {
+        animation-play-state: paused;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Pausar animación cuando la pestaña no está activa
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        ribbon.style.animationPlayState = 'paused';
+      } else {
+        ribbon.style.animationPlayState = 'running';
+      }
+    });
+  });
+</script>
+
+<style>
+  /* Galería estilo cinta horizontal */
+  .gallery-container {
+    width: 100%;
+    overflow: hidden;
+    padding: 3rem 0;
+    position: relative;
+  }
+  
+  .gallery-ribbon {
+    display: flex;
+    gap: 1rem;
+    width: max-content;
+    padding: 0 1rem;
+    will-change: transform;
+  }
+  
+  .gallery-ribbon-item {
+    flex: 0 0 auto;
+    transition: transform 0.3s ease;
+  }
+  
+  .gallery-ribbon-item:hover {
+    z-index: 10;
+  }
+  
+  /* Efecto de desenfoque en los bordes */
+  @media (min-width: 768px) {
+    .gallery-container::before,
+    .gallery-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 200px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    
+    .gallery-container::before {
+      left: 0;
+      background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+    }
+    
+    .gallery-container::after {
+      right: 0;
+      background: linear-gradient(270deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+    }
+  }
+  
+  /* Asegurar que la animación sea fluida */
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-ribbon {
+      animation: none;
+      overflow-x: auto;
+    }
+  }
+  
+  .gallery-ribbon {
+    display: flex;
+    gap: 1.5rem;
+    padding: 2rem 0;
+    width: fit-content; /* Ajusta el ancho al contenido */
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* Para Firefox */
+    -ms-overflow-style: none; /* Para IE y Edge */
+    animation: scroll 30s linear infinite;
+  }
+  
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%); /* Mueve exactamente la mitad del ancho total */
+    }
+  }
+  
+  .gallery-ribbon:hover {
+    animation-play-state: paused;
+  }
+  
+  .gallery-ribbon::-webkit-scrollbar {
+    display: none; /* Para Chrome, Safari y Opera */
+  }
+  
+  .gallery-ribbon-item {
+    flex: 0 0 auto;
+    width: 300px;
+    height: 225px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+    scroll-snap-align: start;
+    cursor: pointer;
+    background: #f5f5f5;
+    position: relative;
+  }
+  
+  .gallery-ribbon-item:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  }
+  
+  .gallery-ribbon-item:hover img {
+    transform: scale(1.1);
+  }
+  
+  .gallery-ribbon-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  
+  .gallery-ribbon-item.loaded img {
+    transform: scale(1.05);
+  }
+  
+  /* Estilos para el modal */
+  .gallery-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+  }
+  
+  .modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+  }
+  
+  .modal-content img {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 0.5rem;
+  }
+  
+  .close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .close-modal:hover {
+    background: rgba(0, 0, 0, 0.9);
+  }
+</style>
+
+<!-- Placeholder para cuando las imágenes están cargando -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Agregar clase de carga a las imágenes mientras se cargan
+    const images = document.querySelectorAll('.gallery-item img');
+    
+    images.forEach(img => {
+      // Mostrar placeholder mientras carga
+      const placeholder = document.createElement('div');
+      placeholder.className = 'gallery-loading absolute inset-0';
+      img.parentNode.insertBefore(placeholder, img);
+      
+      // Cuando la imagen se cargue, quitar el placeholder
+      if (img.complete) {
+        placeholder.remove();
+      } else {
+        img.addEventListener('load', () => {
+          placeholder.remove();
+        });
+        
+        // En caso de error al cargar
+        img.addEventListener('error', () => {
+          placeholder.remove();
+          img.src = '${placeholderUrl}';
+        });
+      }
+    });
+    
+    // Navegación con teclado
+    document.addEventListener('keydown', (e) => {
+      const modal = document.querySelector('.gallery-modal');
+      if (!modal) return;
+      
+      if (e.key === 'Escape') {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+      }
+    });
+  });
+</script>
