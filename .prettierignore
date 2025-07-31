@@ -1,0 +1,110 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Testing
+coverage
+
+# Production
+build
+dist
+.next
+out
+.vercel
+.netlify
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local development
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Astro
+.astro
+
+# Cache
+.cache
+.temp
+.tmp
+
+# Logs
+logs
+*.log
+
+# Build outputs
+public/optimized-images
+public/js/optimize.js
+
+# Ignore package files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Ignore optimization reports
+lighthouse-report.json
+
+# Ignore IDE specific files
+.idea/
+.vscode/
+*.code-workspace
+
+# Ignore environment files
+.env
+.env.*
+!.env.example
+
+# Ignore generated files
+**/generated/*
+
+# Ignore Astro build output
+.astro/
+
+# Ignore TypeScript build output
+dist-tsc/
+
+# Ignore Next.js build output
+.next/
+
+# Ignore Netlify build output
+.netlify/
+
+# Ignore Vercel build output
+.vercel/
+
+# Ignore images and assets (they shouldn't be formatted)
+**/public/**/*.{png,jpg,jpeg,gif,webp,svg,ico,woff,woff2,ttf,eot}
+
+# Ignore markdown files (format them with Prettier if needed)
+# **/*.md
+# **/*.mdx
+
+# Ignore JSON files (format them with Prettier if needed)
+# **/*.json
+
+# Ignore YAML files (format them with Prettier if needed)
+# **/*.yaml
+# **/*.yml

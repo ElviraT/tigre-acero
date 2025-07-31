@@ -15,17 +15,11 @@ export const optimizationConfig = {
     defaultWidth: 1024,
   },
   
-  // Preload de recursos críticos
-  preload: {
-    fonts: [
-      '/fonts/oswald-v49-latin-700.woff2',
-      '/fonts/roboto-v30-latin-regular.woff2',
-    ],
-    images: [
-      '/images/logo.png',
-      '/images/hero/slider1.png',
-    ],
-  },
+  // Preload de recursos estáticos
+  preload: [
+    '/images/logo.png',
+    '/images/hero/slider1.png',
+  ],
   
   // Prefetch de rutas importantes
   prefetch: [
@@ -43,11 +37,14 @@ export const optimizationConfig = {
     assets: [
       '/',
       '/index.html',
-      '/css/main.css',
-      '/js/main.js',
+      '/styles/global.css',
+      '/js/optimize.js',
       '/images/logo.png',
-      '/images/favicon.ico',
+      '/favicon.png',
       '/site.webmanifest',
+      '/offline.html',
+      '/robots.txt',
+      '/sitemap.xml'
     ],
   },
   

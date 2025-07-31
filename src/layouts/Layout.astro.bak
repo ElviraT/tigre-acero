@@ -1,0 +1,253 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BackToTop from '../components/BackToTop.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: string;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+  modifiedTime?: string;
+  tags?: string[];
+}
+
+const { 
+  title = 'Club de Hapkido Tigre de Acero',
+  description = 'Escuela profesional de Hapkido. Clases para todas las edades. Aprende defensa personal, disciplina y respeto con nuestros instructores certificados.',
+  image = '/images/logo.png',
+  canonicalURL = Astro.url.href,
+  type = 'website',
+  publishedTime,
+  modifiedTime,
+  tags = ['hapkido', 'artes marciales', 'defensa personal', 'Tigre de Acero']
+} = Astro.props;
+
+const fullTitle = `${title} | Club de Hapkido Tigre de Acero`;
+const siteURL = 'https://tigredeacero.com';
+const fullImage = new URL(image, siteURL).toString();
+---
+
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth fonts-loading">
+  <head>
+    <!-- Metadatos básicos -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content={description} />
+    <meta name="author" content="Ing. Elvira Terán" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#b91c1c" />
+    
+    <!-- Título -->
+    <title>{fullTitle}</title>
+    
+    <!-- Preconexiones y precarga de recursos críticos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="dns-prefetch" href="https://www.youtube.com" />
+    <link rel="preload" href="/images/logo.png" as="image" />
+    <link rel="preload" href="/images/hero/slider1.png" as="image" />
+    
+    <!-- Favicon y recursos de iconos -->
+    <link rel="icon" type="image/png" href="/favicon.ico" />
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="apple-touch-icon" href="/images/logo.png" />
+    <link rel="manifest" href="/site.webmanifest" crossorigin="use-credentials" />
+    <meta name="theme-color" content="#b91c1c" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- Open Graph / Facebook / Twitter -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={fullImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={fullTitle} />
+    <meta property="og:site_name" content="Club de Hapkido Tigre de Acero" />
+    <meta property="og:locale" content="es_ES" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={fullImage} />
+    <meta name="twitter:image:alt" content={fullTitle} />
+    <meta name="twitter:creator" content="@tigredeacero" />
+    <meta name="twitter:site" content="@tigredeacero" />
+    
+    <!-- Schema.org para Google -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Club de Hapkido Tigre de Acero",
+        "url": "https://tigredeacero.com",
+        "logo": "https://tigredeacero.com/images/logo.png",
+        "sameAs": [
+          "https://www.facebook.com/tigredeacero",
+          "https://www.instagram.com/tigredeacero",
+          "https://www.youtube.com/@tigredeacero"
+        ]
+      }
+    </script>
+    
+    <!-- Preload de fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Estilos críticos -->
+    <style>
+      /* Estilos críticos inline para el renderizado inicial */
+      :root {
+        --primary: #b91c1c;
+        --primary-dark: #991b1b;
+        --secondary: #1e40af;
+        --dark: #1a1a1a;
+        --light: #f8fafc;
+        --gray: #6b7280;
+        --max-width: 1280px;
+      }
+      
+      /* Estilos para el estado de carga de fuentes */
+      .fonts-loading body {
+        visibility: hidden;
+      }
+      .fonts-loaded body {
+        visibility: visible;
+        font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+      
+      /* Estilos base para mejorar CLS */
+      img, video, iframe {
+        max-width: 100%;
+        height: auto;
+      }
+      
+      /* Mejoras de rendimiento */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      
+      /* Estilos para el botón de saltar al contenido */
+      .skip-to-content {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: var(--primary);
+        color: white;
+        padding: 8px 16px;
+        z-index: 1000;
+        transition: transform 0.2s ease-in-out;
+      }
+      
+      .skip-to-content:focus {
+        transform: translateY(40px);
+      }
+      
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-height: 100vh;
+      }
+    </style>
+    
+    <!-- Cargar estilos principales -->
+    <link rel="preload" href="/styles/global.css" as="style" />
+    <!-- Hojas de estilo -->
+    <link rel="stylesheet" href="/styles/global.css" />
+    
+    <!-- Cargar scripts de optimización de forma asíncrona -->
+    <script>
+      // Cargar el script de optimización de forma no bloqueante
+      function loadScript(src, isModule = false) {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = src;
+          if (isModule) script.type = 'module';
+          script.onload = resolve;
+          script.onerror = reject;
+          document.body.appendChild(script);
+        });
+      }
+      
+      // Cargar scripts críticos después de la carga inicial
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(
+          () => {
+            // Cargar el script de optimización desde la ubicación correcta
+            loadScript('/js/optimize.js').catch(err => console.error('Error al cargar optimize.js:', err));
+          },
+          { timeout: 2000 }
+        );
+      } else {
+        window.addEventListener('load', () => {
+          setTimeout(() => loadScript('/js/optimize.js').catch(err => console.error('Error al cargar optimize.js:', err)), 0);
+        });
+      }
+    </script>
+  </head>
+  <body class="bg-gray-50 text-gray-900 antialiased" id="main-content">
+    <a href="#main-content" class="skip-to-content">Saltar al contenido principal</a>
+    <div class="min-h-screen flex flex-col">
+      <Header />
+      <main class="flex-grow">
+        <slot />
+      </main>
+      <BackToTop />
+      <Footer />
+    </div>
+    
+    <!-- Scripts de seguimiento (cargados de forma no bloqueante) -->
+    <script>
+      // Cargar scripts de análisis de forma no bloqueante
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      
+      // Prevenir que los scripts de seguimiento bloqueen la renderización
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(
+          () => {
+            // Google Analytics
+            const gaScript = document.createElement('script');
+            gaScript.async = true;
+            gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX';
+            document.head.appendChild(gaScript);
+            
+            // Inicializar Google Analytics
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXX', { 'anonymize_ip': true });
+            
+            // Hotjar (opcional)
+            (function(h, o, t, j) {
+              h.hj = h.hj || function() {(h.hj.q = h.hj.q || []).push(arguments)};
+              h._hjSettings = {hjid: 0, hjsv: 6};
+              const a = o.getElementsByTagName('head')[0];
+              const r = o.createElement('script');
+              r.async = true;
+              r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+              a.appendChild(r);
+            })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+          },
+          { timeout: 3000 }
+        );
+      }
+    </script>
+  </body>
+</html>

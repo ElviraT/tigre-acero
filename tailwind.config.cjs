@@ -179,10 +179,7 @@ module.exports = {
     },
   },
   plugins: [
-    require('@tailwindcss/typography'),
-    require('@tailwindcss/forms')({
-      strategy: 'class',
-    }),
+    require('@tailwindcss/typography')
   ],
   // Configuración de modo oscuro basado en clase
   darkMode: 'class',

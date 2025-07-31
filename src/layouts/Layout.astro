@@ -1,129 +1,136 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import BackToTop from '../components/BackToTop.astro';
-
-interface Props {
-  title: string;
-  description?: string;
-  image?: string;
-  canonicalURL?: string;
-  type?: 'website' | 'article';
-  publishedTime?: string;
-  modifiedTime?: string;
-  tags?: string[];
-}
 
 const { 
   title = 'Club de Hapkido Tigre de Acero',
   description = 'Escuela profesional de Hapkido. Clases para todas las edades. Aprende defensa personal, disciplina y respeto con nuestros instructores certificados.',
   image = '/images/logo.png',
-  canonicalURL = Astro.url.href,
-  type = 'website',
-  publishedTime,
-  modifiedTime,
-  tags = ['hapkido', 'artes marciales', 'defensa personal', 'Tigre de Acero']
+  type = 'website'
 } = Astro.props;
 
 const fullTitle = `${title} | Club de Hapkido Tigre de Acero`;
-const siteURL = 'https://tigredeacero.com';
-const fullImage = new URL(image, siteURL).toString();
+const siteUrl = 'https://tigredeacero.com';
+const fullImage = new URL(image, siteUrl).toString();
 ---
 
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
   <head>
-    <!-- Metadatos básicos -->
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content={description} />
     <meta name="author" content="Ing. Elvira Terán" />
     <meta name="generator" content={Astro.generator} />
     <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#b91c1c" />
     
-    <!-- Título -->
     <title>{fullTitle}</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="apple-touch-icon" href="/images/logo-192x192.png" />
-    <link rel="manifest" href="/site.webmanifest" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={type} />
-    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:url" content={Astro.url.href} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={fullImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={fullTitle} />
     <meta property="og:site_name" content="Club de Hapkido Tigre de Acero" />
-    <meta property="og:locale" content="es_ES" />
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:url" content={Astro.url.href} />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={fullImage} />
+    <meta name="twitter:image:alt" content={fullTitle} />
     
     <!-- Canonical URL -->
-    <link rel="canonical" href={canonicalURL} />
+    <link rel="canonical" href={Astro.url.href} />
     
-    <!-- Schema.org para Google -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Club de Hapkido Tigre de Acero",
-        "url": "${siteURL}",
-        "logo": "${siteURL}/images/logo.png",
-        "sameAs": [
-          "https://www.facebook.com/tigredeacero",
-          "https://www.instagram.com/tigredeacero"
-        ]
-      }
-    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
     
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Club de Hapkido Tigre de Acero",
-        "url": "${siteURL}",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "${siteURL}/?s={search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
+    <!-- Estilos globales -->
+    <link rel="stylesheet" href="/styles/global.css" />
+    
+    <style>
+      /* Estilos críticos */
+      :root {
+        --primary: #b91c1c;
+        --primary-dark: #991b1b;
+        --light: #f8fafc;
+        --dark: #1e293b;
       }
-    </script>
-
-    <!-- Preload de fuentes -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-
-    <!-- Estilos -->
-    <link rel="stylesheet" href="/src/styles/global.css" />
-
-    <!-- Preload de imágenes críticas -->
-    <link rel="preload" as="image" href="/images/logo.png" />
+      
+      body {
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--light);
+        color: var(--dark);
+      }
+      
+      .min-h-screen {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .flex-grow {
+        flex-grow: 1;
+      }
+      
+      .antialiased {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
   </head>
-  <body class="min-h-screen bg-gray-50 text-gray-800 antialiased">
-    <Header />
-    <main class="min-h-[calc(100vh-200px)] pt-16">
-      <slot />
-    </main>
-    <Footer />
-    <BackToTop />
+  <body class="bg-gray-50 text-gray-900 antialiased">
+    <div class="min-h-screen">
+      <Header />
+      <main class="flex-grow">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+    
+    <!-- Scripts básicos -->
+    <script>
+      // Función para cargar scripts de forma asíncrona
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.onload = resolve;
+          script.onerror = reject;
+          document.body.appendChild(script);
+        });
+      }
+      
+      // Cargar scripts no críticos después de la carga
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initScripts);
+      } else {
+        initScripts();
+      }
+      
+      function initScripts() {
+        // Cargar scripts no críticos aquí si es necesario
+        (function(h, o, t, j) {
+          h.hj = h.hj || function() {(h.hj.q = h.hj.q || []).push(arguments)};
+          h._hjSettings = {hjid: 0, hjsv: 6};
+          const a = o.getElementsByTagName('head')[0];
+          const r = o.createElement('script');
+          r.async = true;
+          r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+          a.appendChild(r);
+        })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+      }
+    </script>
   </body>
 </html>
-
-<style>
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    min-height: 100vh;
-	}
-</style>

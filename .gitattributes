@@ -1,0 +1,124 @@
+# Auto detect text files and perform LF normalization
+* text=auto eol=lf
+
+# Force binary files to use LF line endings
+*.{png,jpg,jpeg,gif,webp,ico,woff,woff2,ttf,eot,svg} binary
+
+# Force shell scripts to use LF line endings
+*.sh text eol=lf
+
+# Force Windows batch files to use CRLF line endings
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+
+# Force TypeScript and JavaScript files to use LF
+*.{ts,tsx,js,jsx,mjs,cjs} text eol=lf
+
+# Force JSON files to use LF
+*.json text eol=lf
+
+# Force CSS and SCSS files to use LF
+*.{css,scss} text eol=lf
+
+# Force HTML and Astro files to use LF
+*.{html,astro} text eol=lf
+
+# Force markdown files to use LF
+*.{md,mdx} text eol=lf
+
+# Force YAML files to use LF
+*.{yaml,yml} text eol=lf
+
+# Force editor config files to use LF
+.editorconfig text eol=lf
+.eslintrc* text eol=lf
+.prettierrc* text eol=lf
+.stylelintrc* text eol=lf
+
+# Force git files to use LF
+.gitattributes text eol=lf
+.gitignore text eol=lf
+.gitmodules text eol=lf
+
+# Force npm files to use LF
+package.json text eol=lf
+package-lock.json text eol=lf
+yarn.lock text eol=lf
+pnpm-lock.yaml text eol=lf
+
+# Force lock files to use LF
+*-lock.* text eol=lf
+
+# Force configuration files to use LF
+*.config.{js,cjs,mjs,ts} text eol=lf
+*.conf text eol=lf
+*.toml text eol=lf
+*.ini text eol=lf
+
+# Force documentation files to use LF
+LICENSE* text eol=lf
+CHANGELOG* text eol=lf
+README* text eol=lf
+CONTRIBUTING* text eol=lf
+CODE_OF_CONDUCT* text eol=lf
+SECURITY* text eol=lf
+
+# Force test files to use LF
+*.test.{js,jsx,ts,tsx} text eol=lf
+*.spec.{js,jsx,ts,tsx} text eol=lf
+__tests__/**/*.{js,jsx,ts,tsx} text eol=lf
+
+# Force source files to use LF
+src/**/*.{js,jsx,ts,tsx} text eol=lf
+
+# Force public files to use LF
+public/**/*.{html,css,js,json,svg} text eol=lf
+
+# Force scripts to use LF
+scripts/**/*.{js,ts} text eol=lf
+
+# Force GitHub specific files to use LF
+.github/**/* text eol=lf
+
+# Force Docker files to use LF
+Dockerfile* text eol=lf
+docker-compose*.{yml,yaml} text eol=lf
+.dockerignore text eol=lf
+
+# Force CI/CD files to use LF
+*.{travis.yml,circle.yml,appveyor.yml} text eol=lf
+.azure-pipelines/**/*.yml text eol=lf
+.github/workflows/*.yml text eol=lf
+.gitlab-ci.yml text eol=lf
+
+# Force IDE specific files to use LF
+.vscode/**/* text eol=lf
+.idea/**/* text eol=lf
+*.code-workspace text eol=lf
+
+# Force environment files to use LF
+.env* text eol=lf
+!.env.example
+
+# Force lock files to be treated as binary
+package-lock.json binary
+yarn.lock binary
+pnpm-lock.yaml binary
+
+# Force large files to use Git LFS
+*.{zip,rar,7z,gz,mp4,mov,avi,mp3,wav,flac,ogg,mpg,mpeg,webm,doc,docx,xls,xlsx,ppt,pptx,pdf} binary
+
+# Force binary files to use Git LFS
+*.{png,jpg,jpeg,gif,webp,ico,woff,woff2,ttf,eot,svg} filter=lfs diff=lfs merge=lfs -text
+
+# Force all files in the root directory to use LF
+/* text eol=lf
+
+# Force all files in the src directory to use LF
+/src/** text eol=lf
+
+# Force all files in the public directory to use LF
+/public/** text eol=lf
+
+# Force all files in the scripts directory to use LF
+/scripts/** text eol=lf
