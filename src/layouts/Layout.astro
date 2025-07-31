@@ -1,8 +1,9 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import BackToTop from '../components/BackToTop.astro';
 
-const { 
+const {
   title = 'Club de Hapkido Tigre de Acero',
   description = 'Escuela profesional de Hapkido. Clases para todas las edades. Aprende defensa personal, disciplina y respeto con nuestros instructores certificados.',
   image = '/images/logo.png',
@@ -24,9 +25,9 @@ const fullImage = new URL(image, siteUrl).toString();
     <meta name="generator" content={Astro.generator} />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#b91c1c" />
-    
+
     <title>{fullTitle}</title>
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={type} />
     <meta property="og:url" content={Astro.url.href} />
@@ -37,7 +38,7 @@ const fullImage = new URL(image, siteUrl).toString();
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={fullTitle} />
     <meta property="og:site_name" content="Club de Hapkido Tigre de Acero" />
-    
+
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content={Astro.url.href} />
@@ -45,18 +46,18 @@ const fullImage = new URL(image, siteUrl).toString();
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={fullImage} />
     <meta name="twitter:image:alt" content={fullTitle} />
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href={Astro.url.href} />
-    
+    <link rel="icon" type="image/png" href="/images/logo.png" />
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
-    
+
     <!-- Estilos globales -->
     <link rel="stylesheet" href="/styles/global.css" />
-    
+
     <style>
       /* Estilos críticos */
       :root {
@@ -65,7 +66,7 @@ const fullImage = new URL(image, siteUrl).toString();
         --light: #f8fafc;
         --dark: #1e293b;
       }
-      
+
       body {
         font-family: 'Roboto', sans-serif;
         margin: 0;
@@ -73,17 +74,17 @@ const fullImage = new URL(image, siteUrl).toString();
         background-color: var(--light);
         color: var(--dark);
       }
-      
+
       .min-h-screen {
         min-height: 100vh;
         display: flex;
         flex-direction: column;
       }
-      
+
       .flex-grow {
         flex-grow: 1;
       }
-      
+
       .antialiased {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -98,7 +99,10 @@ const fullImage = new URL(image, siteUrl).toString();
       </main>
       <Footer />
     </div>
-    
+
+    <!-- Botón para volver arriba -->
+    <BackToTop />
+
     <!-- Scripts básicos -->
     <script>
       // Función para cargar scripts de forma asíncrona
@@ -111,14 +115,14 @@ const fullImage = new URL(image, siteUrl).toString();
           document.body.appendChild(script);
         });
       }
-      
+
       // Cargar scripts no críticos después de la carga
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initScripts);
       } else {
         initScripts();
       }
-      
+
       function initScripts() {
         // Cargar scripts no críticos aquí si es necesario
         (function(h, o, t, j) {
