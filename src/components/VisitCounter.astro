@@ -18,15 +18,17 @@
 if (typeof window !== 'undefined') {
   // Inicializar el contador de visitas
   function updateVisitCounter() {
-    let visits = JSON.parse(localStorage.getItem('tigreAceroVisits') || '{"count": 0, "lastVisit": 0}');
+    // Obtener el contador actual o inicializarlo si no existe
+    let visits = JSON.parse(localStorage.getItem('tigreAceroVisits') || '{"count": 0, "lastVisit": 0, "sessionActive": false}');
     
-    // Incrementar el contador solo si ha pasado más de 30 minutos desde la última visita
     const now = Date.now();
     const thirtyMinutes = 30 * 60 * 1000; // 30 minutos en milisegundos
     
-    if (now - visits.lastVisit > thirtyMinutes) {
+    // Si es una nueva sesión o ha pasado más de 30 minutos desde la última visita
+    if (!visits.sessionActive || now - visits.lastVisit > thirtyMinutes) {
       visits.count++;
       visits.lastVisit = now;
+      visits.sessionActive = true; // Marcar la sesión como activa
       localStorage.setItem('tigreAceroVisits', JSON.stringify(visits));
       
       // Obtener información de ubicación para visitas únicas
@@ -58,8 +60,9 @@ if (typeof window !== 'undefined') {
         .catch(error => console.error('Error al obtener la ubicación:', error));
     }
     
-    // Actualizar el contador en la interfaz
-    document.getElementById('visit-count').textContent = `Visitas: ${visits.count}`;
+    // Mostrar el contador en la interfaz
+    const visitCount = visits.count || 1; // Asegurarse de que al menos muestre 1
+    document.getElementById('visit-count').textContent = `Visitas: ${visitCount}`;
   }
   
   // Función para mostrar estadísticas de ubicación
@@ -103,9 +106,48 @@ if (typeof window !== 'undefined') {
   // Cargar estadísticas de ubicación guardadas
   function loadSavedStats() {
     const locations = JSON.parse(localStorage.getItem('tigreAceroLocations') || '[]');
-    if (locations.length > 0) {
+    
+    // Si no hay ubicaciones guardadas, intentar obtener la actual
+    if (locations.length === 0) {
+      fetchLocationData();
+    } else {
       updateLocationStats(locations);
     }
+  }
+  
+  // Función para obtener datos de ubicación
+  function fetchLocationData() {
+    fetch('https://ipapi.co/json/')
+      .then(response => response.json())
+      .then(data => {
+        const now = Date.now();
+        const locationData = {
+          city: data.city || 'Desconocida',
+          region: data.region || 'Desconocida',
+          country: data.country_name || 'Desconocido',
+          timestamp: now
+        };
+        
+        // Guardar la ubicación
+        let locations = JSON.parse(localStorage.getItem('tigreAceroLocations') || '[]');
+        locations.push(locationData);
+        
+        // Mantener solo las últimas 50 ubicaciones
+        if (locations.length > 50) {
+          locations = locations.slice(-50);
+        }
+        
+        localStorage.setItem('tigreAceroLocations', JSON.stringify(locations));
+        updateLocationStats(locations);
+      })
+      .catch(error => {
+        console.error('Error al obtener la ubicación:', error);
+        // Mostrar un mensaje genérico si no se puede obtener la ubicación
+        const locationInfo = document.getElementById('location-info');
+        if (locationInfo) {
+          locationInfo.innerHTML = '<div>Ubicación no disponible</div>';
+        }
+      });
   }
   
   // Inicializar el contador cuando el DOM esté listo
