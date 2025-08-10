@@ -1,0 +1,136 @@
+---
+// Este componente muestra un contador de visitas con información de ubicación
+// No requiere props ya que funciona de forma independiente
+---
+
+<div id="visit-counter" class="fixed bottom-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg shadow-lg p-4 text-sm text-gray-700 dark:text-gray-200 z-50 border border-gray-200 dark:border-gray-700">
+  <div class="flex items-center space-x-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+    </svg>
+    <span id="visit-count" class="font-medium">Cargando visitas...</span>
+  </div>
+  <div id="location-info" class="mt-1 text-xs text-gray-500 dark:text-gray-400"></div>
+</div>
+
+<script>
+// Verificar si el navegador soporta localStorage
+if (typeof window !== 'undefined') {
+  // Inicializar el contador de visitas
+  function updateVisitCounter() {
+    let visits = JSON.parse(localStorage.getItem('tigreAceroVisits') || '{"count": 0, "lastVisit": 0}');
+    
+    // Incrementar el contador solo si ha pasado más de 30 minutos desde la última visita
+    const now = Date.now();
+    const thirtyMinutes = 30 * 60 * 1000; // 30 minutos en milisegundos
+    
+    if (now - visits.lastVisit > thirtyMinutes) {
+      visits.count++;
+      visits.lastVisit = now;
+      localStorage.setItem('tigreAceroVisits', JSON.stringify(visits));
+      
+      // Obtener información de ubicación para visitas únicas
+      fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => {
+          // Guardar la ubicación en localStorage
+          const locationData = {
+            city: data.city,
+            region: data.region,
+            country: data.country_name,
+            timestamp: now
+          };
+          
+          // Obtener ubicaciones anteriores
+          let locations = JSON.parse(localStorage.getItem('tigreAceroLocations') || '[]');
+          locations.push(locationData);
+          
+          // Mantener solo las últimas 50 ubicaciones
+          if (locations.length > 50) {
+            locations = locations.slice(-50);
+          }
+          
+          localStorage.setItem('tigreAceroLocations', JSON.stringify(locations));
+          
+          // Actualizar la interfaz con estadísticas
+          updateLocationStats(locations);
+        })
+        .catch(error => console.error('Error al obtener la ubicación:', error));
+    }
+    
+    // Actualizar el contador en la interfaz
+    document.getElementById('visit-count').textContent = `Visitas: ${visits.count}`;
+  }
+  
+  // Función para mostrar estadísticas de ubicación
+  function updateLocationStats(locations) {
+    if (!locations || locations.length === 0) return;
+    
+    // Contar visitas por país
+    const countryCount = {};
+    const cityCount = {};
+    
+    locations.forEach(visit => {
+      const country = visit.country || 'Desconocido';
+      const city = visit.city ? `${visit.city}, ${visit.region || ''}` : 'Desconocida';
+      
+      countryCount[country] = (countryCount[country] || 0) + 1;
+      cityCount[city] = (cityCount[city] || 0) + 1;
+    });
+    
+    // Ordenar países y ciudades por frecuencia
+    const sortedCountries = Object.entries(countryCount)
+      .sort((a, b) => b[1] - a[1]);
+      
+    const sortedCities = Object.entries(cityCount)
+      .sort((a, b) => b[1] - a[1]);
+    
+    // Mostrar información en la interfaz
+    const locationInfo = document.getElementById('location-info');
+    
+    if (sortedCountries.length > 0) {
+      const topCountry = sortedCountries[0];
+      const topCity = sortedCities[0];
+      
+      locationInfo.innerHTML = `
+        <div>País principal: ${topCountry[0]} (${topCountry[1]})</div>
+        <div>Ciudad principal: ${topCity[0]} (${topCity[1]})</div>
+        <div class="text-xs mt-1 text-gray-400">Última actualización: ${new Date().toLocaleTimeString()}</div>
+      `;
+    }
+  }
+  
+  // Cargar estadísticas de ubicación guardadas
+  function loadSavedStats() {
+    const locations = JSON.parse(localStorage.getItem('tigreAceroLocations') || '[]');
+    if (locations.length > 0) {
+      updateLocationStats(locations);
+    }
+  }
+  
+  // Inicializar el contador cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', () => {
+    updateVisitCounter();
+    loadSavedStats();
+    
+    // Actualizar las estadísticas cada minuto (opcional)
+    setInterval(loadSavedStats, 60000);
+  });
+}
+</script>
+
+<style>
+/* Estilos responsivos */
+@media (max-width: 640px) {
+  #visit-counter {
+    right: 0.5rem;
+    bottom: 0.5rem;
+    font-size: 0.75rem;
+    padding: 0.5rem;
+  }
+  
+  #location-info {
+    display: none; /* Ocultar en móviles para ahorrar espacio */
+  }
+}
+</style>

@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import BackToTop from '../components/BackToTop.astro';
+import VisitCounter from '../components/VisitCounter.astro';
 
 const {
   title = 'Club de Hapkido Tigre de Acero',
@@ -136,5 +137,6 @@ const fullImage = new URL(image, siteUrl).toString();
         })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
       }
     </script>
+    <VisitCounter />
   </body>
 </html>
