@@ -1,5 +1,6 @@
 ---
-// Este componente muestra un contador de visitas simple
+// Este componente muestra un contador de visitas usando GoatCounter
+const GOAT_COUNTER_CODE = 'elvirat.goatcounter.com';
 ---
 
 <div id="visit-counter" class="fixed bottom-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg shadow-lg p-3 text-sm text-gray-700 dark:text-gray-200 z-50 border border-gray-200 dark:border-gray-700">
@@ -14,190 +15,58 @@
 <script>
 // Verificar si estamos en el navegador
 if (typeof window !== 'undefined') {
+  // Cargar el script de GoatCounter
+  const script = document.createElement('script');
+  script.src = '//gc.zgo.at/count.js';
+  script.async = true;
+  script.setAttribute('data-goatcounter', 'https://elvirat.goatcounter.com/count');
+  document.head.appendChild(script);
+
   // Función para formatear el número de visitas
   function formatVisitCount(count) {
-    return `${count} visitas hoy`;
+    return `${count} visitas`;
   }
 
-  // Función para actualizar el contador en el servidor
-  async function updateVisitCounter() {
+  // Función para actualizar el contador
+  async function updateCounter() {
     try {
-      // Mostrar estado de carga
       const counterElement = document.getElementById('visit-count');
-      counterElement.textContent = 'Actualizando...';
       
-      // Usar un timestamp único para evitar caché
-      const timestamp = new Date().getTime();
-      let response;
+      // Usamos la API de GoatCounter para obtener el contador
+      const response = await fetch(`https://elvirat.goatcounter.com/counter/${encodeURIComponent(window.location.pathname)}.json`);
       
-      try {
-        // Intentar con Netlify Functions primero
-        response = await fetch(`/.netlify/functions/visits?t=${timestamp}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          cache: 'no-cache'
-        });
-        
-        // Si falla, intentar con la ruta de API directa
-        if (!response.ok) {
-          console.log('Usando ruta alternativa...');
-          response = await fetch(`/api/visits?t=${timestamp}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            cache: 'no-cache'
-          });
-        }
-      } catch (networkError) {
-        console.error('Error de red:', networkError);
-        throw new Error('No se pudo conectar al servidor');
-      }
+      if (!response.ok) throw new Error('Error al obtener el contador');
       
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error en la respuesta:', response.status, errorText);
-        throw new Error(`Error del servidor: ${response.status}`);
-      }
+      const data = await response.json();
+      const count = data.count || 0;
       
-      const data = await response.json().catch(jsonError => {
-        console.error('Error al parsear JSON:', jsonError);
-        throw new Error('Respuesta inválida del servidor');
-      });
-      
-      console.log('Respuesta del servidor:', data);
-      
-      if (typeof data.count === 'undefined') {
-        throw new Error('El servidor no devolvió un contador');
-      }
-      
-      // Actualizar la UI
-      counterElement.textContent = formatVisitCount(data.count);
+      counterElement.textContent = formatVisitCount(count);
       
       // Guardar en localStorage para referencia rápida
-      localStorage.setItem('lastVisitCount', data.count);
-      localStorage.setItem('lastVisitDate', data.lastReset || new Date().toDateString());
-      
-      console.log('Contador actualizado correctamente a:', data.count);
+      localStorage.setItem('lastVisitCount', count);
+      localStorage.setItem('lastVisitDate', new Date().toDateString());
       
     } catch (error) {
       console.error('Error al actualizar visitas:', error);
       // Mostrar el último contador guardado si está disponible
       const lastCount = localStorage.getItem('lastVisitCount');
-      const lastDate = localStorage.getItem('lastVisitDate');
-      
-      const counterElement = document.getElementById('visit-count');
-      const today = new Date().toDateString();
-      
-      if (lastCount && lastDate === today) {
-        counterElement.textContent = formatVisitCount(lastCount);
-      } else {
-        counterElement.textContent = 'Error al cargar';
-        // Reintentar después de 5 segundos
-        setTimeout(updateVisitCounter, 5000);
-      }
-    }
-  }
-  
-  // Función para obtener solo el contador sin registrar una nueva visita
-  async function getVisitCount() {
-    try {
-      // Mostrar el contador guardado mientras se carga el actual
-      const lastCount = localStorage.getItem('lastVisitCount');
-      const lastDate = localStorage.getItem('lastVisitDate');
-      const today = new Date().toDateString();
-      
       const counterElement = document.getElementById('visit-count');
       
-      // Mostrar el último valor guardado si es del día de hoy
-      if (lastCount && lastDate === today) {
+      if (lastCount) {
         counterElement.textContent = formatVisitCount(lastCount);
       } else {
-        counterElement.textContent = 'Cargando...';
-      }
-      
-      // Usar un timestamp único para evitar caché
-      const timestamp = new Date().getTime();
-      let response;
-      
-      try {
-        // Intentar con Netlify Functions primero
-        response = await fetch(`/.netlify/functions/visits?t=${timestamp}`, {
-          method: 'GET',
-          cache: 'no-cache'
-        });
-        
-        // Si falla, intentar con la ruta de API directa
-        if (!response.ok) {
-          console.log('Usando ruta alternativa...');
-          response = await fetch(`/api/visits?t=${timestamp}`, {
-            method: 'GET',
-            cache: 'no-cache'
-          });
-        }
-      } catch (networkError) {
-        console.error('Error de red al obtener visitas:', networkError);
-        throw new Error('No se pudo conectar al servidor');
-      }
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error en la respuesta:', response.status, errorText);
-        throw new Error(`Error del servidor: ${response.status}`);
-      }
-      
-      const data = await response.json().catch(jsonError => {
-        console.error('Error al parsear JSON:', jsonError);
-        throw new Error('Respuesta inválida del servidor');
-      });
-      
-      console.log('Datos del servidor:', data);
-      
-      if (typeof data.count === 'undefined') {
-        throw new Error('El servidor no devolvió un contador');
-      }
-      
-      // Actualizar la UI solo si es un número válido
-      const count = parseInt(data.count, 10);
-      if (!isNaN(count)) {
-        counterElement.textContent = formatVisitCount(count);
-        // Actualizar localStorage
-        localStorage.setItem('lastVisitCount', count);
-        localStorage.setItem('lastVisitDate', data.lastReset || today);
-      } else {
-        throw new Error('Contador inválido del servidor');
-      }
-      
-    } catch (error) {
-      console.error('Error al obtener visitas:', error);
-      // Mostrar el último contador guardado si está disponible
-      const lastCount = localStorage.getItem('lastVisitCount');
-      const lastDate = localStorage.getItem('lastVisitDate');
-      const today = new Date().toDateString();
-      
-      const counterElement = document.getElementById('visit-count');
-      if (lastCount && lastDate === today) {
-        counterElement.textContent = formatVisitCount(lastCount);
-      } else {
-        counterElement.textContent = 'Error al cargar';
-        // Reintentar después de 5 segundos
-        setTimeout(getVisitCount, 5000);
+        counterElement.textContent = 'Visitas: -';
       }
     }
   }
   
   // Inicializar el contador cuando el DOM esté listo
   document.addEventListener('DOMContentLoaded', () => {
-    // Usar sessionStorage para evitar múltiples conteos en la misma sesión
-    if (!sessionStorage.getItem('visitCounted')) {
-      // Marcar como contado y actualizar el contador
-      sessionStorage.setItem('visitCounted', 'true');
-      updateVisitCounter();
-    } else {
-      // Si no, solo obtener el contador actual
-      getVisitCount();
-    }
+    // Esperar un momento para que GoatCounter se cargue
+    setTimeout(updateCounter, 2000);
     
-    // Actualizar el contador cada 2 minutos para mantenerlo sincronizado
-    setInterval(getVisitCount, 2 * 60 * 1000);
+    // Actualizar el contador periódicamente
+    setInterval(updateCounter, 5 * 60 * 1000); // Cada 5 minutos
   });
 }
 </script>
@@ -206,6 +75,8 @@ if (typeof window !== 'undefined') {
 /* Estilos responsivos */
 #visit-counter {
   transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 #visit-counter:hover {
