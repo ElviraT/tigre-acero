@@ -1,7 +1,24 @@
 // Usando una variable global para el contador
 // NOTA: Esto se reiniciará cuando la función se recargue, por lo que no es persistente
-let visitCount = 0;
+let visitCount = 1; // Empezamos en 1 para la primera visita
 let lastResetDate = new Date().toDateString();
+
+// Función para inicializar el contador si es un nuevo día
+function initializeCounter() {
+  const today = new Date().toDateString();
+  if (today !== lastResetDate) {
+    visitCount = 1; // Reiniciar a 1 para el nuevo día
+    lastResetDate = today;
+    console.log('Contador reiniciado para el nuevo día:', today);
+  } else if (visitCount === 0) {
+    // Si por alguna razón el contador está en 0, lo establecemos en 1
+    visitCount = 1;
+    console.log('Contador corregido a 1');
+  }
+}
+
+// Inicializar el contador al cargar
+initializeCounter();
 
 // Función para manejar la petición
 export async function handler(event) {
@@ -25,10 +42,11 @@ export async function handler(event) {
   try {
     const today = new Date().toDateString();
     
-    // Si es un nuevo día, reiniciar el contador
+    // Verificar y reiniciar contador si es necesario
     if (today !== lastResetDate) {
       visitCount = 0;
       lastResetDate = today;
+      console.log('Nuevo día detectado, contador reiniciado');
     }
     
     // Si es un POST, incrementar el contador
@@ -44,22 +62,34 @@ export async function handler(event) {
       // Generar un ID único para esta visita
       const visitId = `${today}_${clientIp}_${timestamp}`;
       
-      // Incrementar el contador para cada nueva petición
-      // (en un entorno real, esto debería ser atómico)
+      // Asegurarse de que el contador se incremente correctamente
+      // Siempre incrementar el contador
       visitCount++;
       currentCount = visitCount;
       
+      // Asegurarse de que el contador nunca sea menor a 1
+      if (currentCount < 1) {
+        currentCount = 1;
+        visitCount = 1;
+      }
+      
+      console.log(`Contador incrementado a: ${currentCount}`);
+      
       console.log(`Nueva visita #${currentCount} desde ${clientIp}`);
     }
+    
+    // Asegurarse de que el contador sea al menos 1
+    const finalCount = currentCount < 1 ? 1 : currentCount;
     
     // Devolver los datos actuales
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
-        count: currentCount,
+        count: finalCount,
         lastReset: lastResetDate,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        message: 'Contador actualizado correctamente'
       })
     };
     

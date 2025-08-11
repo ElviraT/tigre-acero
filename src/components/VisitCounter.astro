@@ -26,31 +26,57 @@ if (typeof window !== 'undefined') {
       const counterElement = document.getElementById('visit-count');
       counterElement.textContent = 'Actualizando...';
       
-      // Intentar con Netlify Functions primero
-      let response = await fetch('/.netlify/functions/visits', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      // Usar un timestamp único para evitar caché
+      const timestamp = new Date().getTime();
+      let response;
       
-      // Si falla, intentar con la ruta de API directa
-      if (!response.ok) {
-        console.log('Usando ruta alternativa...');
-        response = await fetch('/api/visits', {
+      try {
+        // Intentar con Netlify Functions primero
+        response = await fetch(`/.netlify/functions/visits?t=${timestamp}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          cache: 'no-cache'
         });
+        
+        // Si falla, intentar con la ruta de API directa
+        if (!response.ok) {
+          console.log('Usando ruta alternativa...');
+          response = await fetch(`/api/visits?t=${timestamp}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-cache'
+          });
+        }
+      } catch (networkError) {
+        console.error('Error de red:', networkError);
+        throw new Error('No se pudo conectar al servidor');
       }
       
-      if (!response.ok) throw new Error('Error al registrar la visita');
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error en la respuesta:', response.status, errorText);
+        throw new Error(`Error del servidor: ${response.status}`);
+      }
       
-      const data = await response.json();
+      const data = await response.json().catch(jsonError => {
+        console.error('Error al parsear JSON:', jsonError);
+        throw new Error('Respuesta inválida del servidor');
+      });
+      
+      console.log('Respuesta del servidor:', data);
+      
+      if (typeof data.count === 'undefined') {
+        throw new Error('El servidor no devolvió un contador');
+      }
+      
+      // Actualizar la UI
       counterElement.textContent = formatVisitCount(data.count);
       
       // Guardar en localStorage para referencia rápida
       localStorage.setItem('lastVisitCount', data.count);
       localStorage.setItem('lastVisitDate', data.lastReset || new Date().toDateString());
       
-      console.log('Contador actualizado:', data);
+      console.log('Contador actualizado correctamente a:', data.count);
       
     } catch (error) {
       console.error('Error al actualizar visitas:', error);
@@ -59,10 +85,14 @@ if (typeof window !== 'undefined') {
       const lastDate = localStorage.getItem('lastVisitDate');
       
       const counterElement = document.getElementById('visit-count');
-      if (lastCount && lastDate === new Date().toDateString()) {
+      const today = new Date().toDateString();
+      
+      if (lastCount && lastDate === today) {
         counterElement.textContent = formatVisitCount(lastCount);
       } else {
         counterElement.textContent = 'Error al cargar';
+        // Reintentar después de 5 segundos
+        setTimeout(updateVisitCounter, 5000);
       }
     }
   }
@@ -73,44 +103,83 @@ if (typeof window !== 'undefined') {
       // Mostrar el contador guardado mientras se carga el actual
       const lastCount = localStorage.getItem('lastVisitCount');
       const lastDate = localStorage.getItem('lastVisitDate');
+      const today = new Date().toDateString();
       
       const counterElement = document.getElementById('visit-count');
       
-      if (lastCount && lastDate === new Date().toDateString()) {
+      // Mostrar el último valor guardado si es del día de hoy
+      if (lastCount && lastDate === today) {
         counterElement.textContent = formatVisitCount(lastCount);
       } else {
         counterElement.textContent = 'Cargando...';
       }
       
-      // Intentar con Netlify Functions primero
-      let response = await fetch('/.netlify/functions/visits');
+      // Usar un timestamp único para evitar caché
+      const timestamp = new Date().getTime();
+      let response;
       
-      // Si falla, intentar con la ruta de API directa
-      if (!response.ok) {
-        console.log('Usando ruta alternativa...');
-        response = await fetch('/api/visits');
+      try {
+        // Intentar con Netlify Functions primero
+        response = await fetch(`/.netlify/functions/visits?t=${timestamp}`, {
+          method: 'GET',
+          cache: 'no-cache'
+        });
+        
+        // Si falla, intentar con la ruta de API directa
+        if (!response.ok) {
+          console.log('Usando ruta alternativa...');
+          response = await fetch(`/api/visits?t=${timestamp}`, {
+            method: 'GET',
+            cache: 'no-cache'
+          });
+        }
+      } catch (networkError) {
+        console.error('Error de red al obtener visitas:', networkError);
+        throw new Error('No se pudo conectar al servidor');
       }
       
-      if (!response.ok) throw new Error('Error al obtener las visitas');
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error en la respuesta:', response.status, errorText);
+        throw new Error(`Error del servidor: ${response.status}`);
+      }
       
-      const data = await response.json();
-      counterElement.textContent = formatVisitCount(data.count);
+      const data = await response.json().catch(jsonError => {
+        console.error('Error al parsear JSON:', jsonError);
+        throw new Error('Respuesta inválida del servidor');
+      });
       
-      // Actualizar localStorage
-      localStorage.setItem('lastVisitCount', data.count);
-      localStorage.setItem('lastVisitDate', data.lastReset || new Date().toDateString());
+      console.log('Datos del servidor:', data);
+      
+      if (typeof data.count === 'undefined') {
+        throw new Error('El servidor no devolvió un contador');
+      }
+      
+      // Actualizar la UI solo si es un número válido
+      const count = parseInt(data.count, 10);
+      if (!isNaN(count)) {
+        counterElement.textContent = formatVisitCount(count);
+        // Actualizar localStorage
+        localStorage.setItem('lastVisitCount', count);
+        localStorage.setItem('lastVisitDate', data.lastReset || today);
+      } else {
+        throw new Error('Contador inválido del servidor');
+      }
       
     } catch (error) {
       console.error('Error al obtener visitas:', error);
       // Mostrar el último contador guardado si está disponible
       const lastCount = localStorage.getItem('lastVisitCount');
       const lastDate = localStorage.getItem('lastVisitDate');
+      const today = new Date().toDateString();
       
       const counterElement = document.getElementById('visit-count');
-      if (lastCount && lastDate === new Date().toDateString()) {
+      if (lastCount && lastDate === today) {
         counterElement.textContent = formatVisitCount(lastCount);
       } else {
         counterElement.textContent = 'Error al cargar';
+        // Reintentar después de 5 segundos
+        setTimeout(getVisitCount, 5000);
       }
     }
   }
