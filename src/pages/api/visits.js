@@ -1,40 +1,47 @@
-// Este endpoint cuenta las visitas diarias
-let dailyVisits = 0;
-let lastReset = new Date().toDateString();
+// Usando el almacenamiento de Netlify Functions
+let visitsData = {
+  count: 0,
+  lastReset: new Date().toDateString()
+};
 
-export async function get() {
+// Función para manejar la petición
+export async function handler(event, context) {
   const today = new Date().toDateString();
   
-  // Reiniciar el contador si es un nuevo día
-  if (today !== lastReset) {
-    dailyVisits = 0;
-    lastReset = today;
+  // Si es un nuevo día, reiniciar el contador
+  if (today !== visitsData.lastReset) {
+    visitsData.count = 0;
+    visitsData.lastReset = today;
   }
   
+  // Si es un POST, incrementar el contador
+  if (event.httpMethod === 'POST') {
+    visitsData.count++;
+  }
+  
+  // Devolver los datos actuales
   return {
+    statusCode: 200,
     body: JSON.stringify({
-      count: dailyVisits,
-      lastReset: lastReset
-    })
+      count: visitsData.count,
+      lastReset: visitsData.lastReset
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    }
   };
 }
 
+// Para compatibilidad con el código existente
+export async function get() {
+  const result = await handler({ httpMethod: 'GET' });
+  return { body: result.body };
+}
+
 export async function post() {
-  const today = new Date().toDateString();
-  
-  // Reiniciar el contador si es un nuevo día
-  if (today !== lastReset) {
-    dailyVisits = 0;
-    lastReset = today;
-  }
-  
-  // Incrementar el contador
-  dailyVisits++;
-  
-  return {
-    body: JSON.stringify({
-      count: dailyVisits,
-      lastReset: lastReset
-    })
-  };
+  const result = await handler({ httpMethod: 'POST' });
+  return { body: result.body };
 }

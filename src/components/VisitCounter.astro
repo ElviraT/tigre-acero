@@ -19,7 +19,7 @@ if (typeof window !== 'undefined') {
   async function updateVisitCounter() {
     try {
       // Primero registramos la visita
-      const response = await fetch('/api/visits', {
+      const response = await fetch('/.netlify/functions/visits', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,14 +36,27 @@ if (typeof window !== 'undefined') {
       
     } catch (error) {
       console.error('Error:', error);
-      document.getElementById('visit-count').textContent = 'Visitas: Error';
+      // Si falla, intentar con la ruta de desarrollo
+      try {
+        const devResponse = await fetch('/api/visits', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const devData = await devResponse.json();
+        document.getElementById('visit-count').textContent = `Visitas hoy: ${devData.count}`;
+      } catch (devError) {
+        console.error('Error en ruta de desarrollo:', devError);
+        document.getElementById('visit-count').textContent = 'Visitas: Error';
+      }
     }
   }
   
   // Función para obtener solo el contador sin registrar una nueva visita
   async function getVisitCount() {
     try {
-      const response = await fetch('/api/visits');
+      const response = await fetch('/.netlify/functions/visits');
       if (!response.ok) throw new Error('Error al obtener las visitas');
       
       const data = await response.json();
@@ -51,7 +64,15 @@ if (typeof window !== 'undefined') {
       
     } catch (error) {
       console.error('Error:', error);
-      document.getElementById('visit-count').textContent = 'Visitas: Error';
+      // Si falla, intentar con la ruta de desarrollo
+      try {
+        const devResponse = await fetch('/api/visits');
+        const devData = await devResponse.json();
+        document.getElementById('visit-count').textContent = `Visitas hoy: ${devData.count}`;
+      } catch (devError) {
+        console.error('Error en ruta de desarrollo:', devError);
+        document.getElementById('visit-count').textContent = 'Visitas: Error';
+      }
     }
   }
   
