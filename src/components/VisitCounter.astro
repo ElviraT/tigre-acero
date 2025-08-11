@@ -2,8 +2,13 @@
 // Este componente muestra un contador de visitas simple
 ---
 
-<div id="visit-counter" class="fixed bottom-4 right-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white px-4 py-2 rounded-lg shadow-lg text-sm font-medium z-50">
-  Cargando visitas...
+<div id="visit-counter" class="fixed bottom-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg shadow-lg p-3 text-sm text-gray-700 dark:text-gray-200 z-50 border border-gray-200 dark:border-gray-700">
+  <div class="flex items-center space-x-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+    </svg>
+    <span id="visit-count" class="font-medium">Cargando visitas...</span>
+  </div>
 </div>
 
 <script>
@@ -11,12 +16,16 @@
 if (typeof window !== 'undefined') {
   // Función para formatear el número de visitas
   function formatVisitCount(count) {
-    return `Visitas hoy: ${count}`;
+    return `${count} visitas hoy`;
   }
 
   // Función para actualizar el contador en el servidor
   async function updateVisitCounter() {
     try {
+      // Mostrar estado de carga
+      const counterElement = document.getElementById('visit-count');
+      counterElement.textContent = 'Actualizando...';
+      
       // Intentar con Netlify Functions primero
       let response = await fetch('/.netlify/functions/visits', {
         method: 'POST',
@@ -35,11 +44,13 @@ if (typeof window !== 'undefined') {
       if (!response.ok) throw new Error('Error al registrar la visita');
       
       const data = await response.json();
-      document.getElementById('visit-counter').textContent = formatVisitCount(data.count);
+      counterElement.textContent = formatVisitCount(data.count);
       
       // Guardar en localStorage para referencia rápida
       localStorage.setItem('lastVisitCount', data.count);
-      localStorage.setItem('lastVisitDate', new Date().toDateString());
+      localStorage.setItem('lastVisitDate', data.lastReset || new Date().toDateString());
+      
+      console.log('Contador actualizado:', data);
       
     } catch (error) {
       console.error('Error al actualizar visitas:', error);
@@ -47,10 +58,11 @@ if (typeof window !== 'undefined') {
       const lastCount = localStorage.getItem('lastVisitCount');
       const lastDate = localStorage.getItem('lastVisitDate');
       
+      const counterElement = document.getElementById('visit-count');
       if (lastCount && lastDate === new Date().toDateString()) {
-        document.getElementById('visit-counter').textContent = formatVisitCount(lastCount);
+        counterElement.textContent = formatVisitCount(lastCount);
       } else {
-        document.getElementById('visit-counter').textContent = 'Visitas: Error';
+        counterElement.textContent = 'Error al cargar';
       }
     }
   }
@@ -62,8 +74,12 @@ if (typeof window !== 'undefined') {
       const lastCount = localStorage.getItem('lastVisitCount');
       const lastDate = localStorage.getItem('lastVisitDate');
       
+      const counterElement = document.getElementById('visit-count');
+      
       if (lastCount && lastDate === new Date().toDateString()) {
-        document.getElementById('visit-counter').textContent = formatVisitCount(lastCount);
+        counterElement.textContent = formatVisitCount(lastCount);
+      } else {
+        counterElement.textContent = 'Cargando...';
       }
       
       // Intentar con Netlify Functions primero
@@ -78,11 +94,11 @@ if (typeof window !== 'undefined') {
       if (!response.ok) throw new Error('Error al obtener las visitas');
       
       const data = await response.json();
-      document.getElementById('visit-counter').textContent = formatVisitCount(data.count);
+      counterElement.textContent = formatVisitCount(data.count);
       
       // Actualizar localStorage
       localStorage.setItem('lastVisitCount', data.count);
-      localStorage.setItem('lastVisitDate', new Date().toDateString());
+      localStorage.setItem('lastVisitDate', data.lastReset || new Date().toDateString());
       
     } catch (error) {
       console.error('Error al obtener visitas:', error);
@@ -90,10 +106,11 @@ if (typeof window !== 'undefined') {
       const lastCount = localStorage.getItem('lastVisitCount');
       const lastDate = localStorage.getItem('lastVisitDate');
       
+      const counterElement = document.getElementById('visit-count');
       if (lastCount && lastDate === new Date().toDateString()) {
-        document.getElementById('visit-counter').textContent = formatVisitCount(lastCount);
+        counterElement.textContent = formatVisitCount(lastCount);
       } else {
-        document.getElementById('visit-counter').textContent = 'Visitas: Error';
+        counterElement.textContent = 'Error al cargar';
       }
     }
   }
@@ -110,20 +127,29 @@ if (typeof window !== 'undefined') {
       getVisitCount();
     }
     
-    // Actualizar el contador cada 5 minutos para mantenerlo sincronizado
-    setInterval(getVisitCount, 5 * 60 * 1000);
+    // Actualizar el contador cada 2 minutos para mantenerlo sincronizado
+    setInterval(getVisitCount, 2 * 60 * 1000);
   });
 }
 </script>
 
 <style>
 /* Estilos responsivos */
+#visit-counter {
+  transition: all 0.3s ease;
+}
+
+#visit-counter:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 @media (max-width: 640px) {
   #visit-counter {
-    right: 0.5rem;
-    bottom: 0.5rem;
+    right: 0.75rem;
+    bottom: 0.75rem;
     font-size: 0.75rem;
-    padding: 0.5rem;
+    padding: 0.5rem 0.75rem;
   }
 }
 </style>

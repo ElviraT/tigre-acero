@@ -1,10 +1,7 @@
-// Almacenamiento en memoria del servidor
-let serverData = {
-  count: 0,
-  lastReset: new Date().toDateString(),
-  // Usamos un Set para almacenar IDs de sesión únicos por día
-  sessions: new Set()
-};
+// Usando una variable global para el contador
+// NOTA: Esto se reiniciará cuando la función se recargue, por lo que no es persistente
+let visitCount = 0;
+let lastResetDate = new Date().toDateString();
 
 // Función para manejar la petición
 export async function handler(event) {
@@ -29,23 +26,30 @@ export async function handler(event) {
     const today = new Date().toDateString();
     
     // Si es un nuevo día, reiniciar el contador
-    if (today !== serverData.lastReset) {
-      serverData.count = 1; // Empezamos en 1 para la primera visita del día
-      serverData.lastReset = today;
-      serverData.sessions.clear(); // Limpiar sesiones del día anterior
+    if (today !== lastResetDate) {
+      visitCount = 0;
+      lastResetDate = today;
     }
     
-    // Si es un POST, intentar incrementar el contador
+    // Si es un POST, incrementar el contador
+    let currentCount = visitCount;
     if (event.httpMethod === 'POST') {
-      // Usar la IP del cliente como identificador único (puedes usar otro método si prefieres)
-      const clientIp = event.headers['client-ip'] || event.headers['x-forwarded-for'] || 'unknown';
-      const sessionId = `${today}_${clientIp}`;
+      // Usar una marca de tiempo para hacer el ID más único
+      const timestamp = Date.now();
+      // Usar la IP del cliente si está disponible
+      const clientIp = event.headers['x-nf-client-connection-ip'] || 
+                      event.headers['x-forwarded-for'] || 
+                      'unknown';
       
-      // Si es una sesión nueva, incrementar el contador
-      if (!serverData.sessions.has(sessionId)) {
-        serverData.sessions.add(sessionId);
-        serverData.count++;
-      }
+      // Generar un ID único para esta visita
+      const visitId = `${today}_${clientIp}_${timestamp}`;
+      
+      // Incrementar el contador para cada nueva petición
+      // (en un entorno real, esto debería ser atómico)
+      visitCount++;
+      currentCount = visitCount;
+      
+      console.log(`Nueva visita #${currentCount} desde ${clientIp}`);
     }
     
     // Devolver los datos actuales
@@ -53,9 +57,9 @@ export async function handler(event) {
       statusCode: 200,
       headers,
       body: JSON.stringify({
-        count: serverData.count,
-        lastReset: serverData.lastReset,
-        totalSessions: serverData.sessions.size
+        count: currentCount,
+        lastReset: lastResetDate,
+        timestamp: new Date().toISOString()
       })
     };
     
@@ -78,8 +82,14 @@ export async function get() {
     httpMethod: 'GET',
     headers: {}
   });
+  
+  // Parsear el body si es una cadena
+  const body = typeof result.body === 'string' ? result.body : JSON.stringify(result.body);
+  
   return { 
-    body: JSON.stringify(JSON.parse(result.body))
+    body: body,
+    statusCode: result.statusCode,
+    headers: result.headers
   };
 }
 
@@ -88,7 +98,13 @@ export async function post() {
     httpMethod: 'POST',
     headers: {}
   });
+  
+  // Parsear el body si es una cadena
+  const body = typeof result.body === 'string' ? result.body : JSON.stringify(result.body);
+  
   return { 
-    body: JSON.stringify(JSON.parse(result.body))
+    body: body,
+    statusCode: result.statusCode,
+    headers: result.headers
   };
 }
