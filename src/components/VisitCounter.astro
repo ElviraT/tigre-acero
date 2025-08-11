@@ -13,46 +13,70 @@
 </div>
 
 <script>
-// Verificar si el navegador soporta localStorage
+// Verificar si el navegador soporta fetch
 if (typeof window !== 'undefined') {
-  // Función para verificar si es un nuevo día
-  function isNewDay(lastDate) {
-    if (!lastDate) return true;
-    const last = new Date(lastDate);
-    const now = new Date();
-    return last.getDate() !== now.getDate() || 
-           last.getMonth() !== now.getMonth() || 
-           last.getFullYear() !== now.getFullYear();
-  }
-
-  // Inicializar el contador de visitas
-  function updateVisitCounter() {
-    // Obtener la fecha actual
-    const now = new Date();
-    const today = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-    
-    // Obtener el contador actual o inicializarlo si no existe
-    let visits = JSON.parse(localStorage.getItem('tigreAceroVisits') || '{"count": 0, "lastDate": ""}');
-    
-    // Verificar si es un nuevo día
-    if (isNewDay(visits.lastDate)) {
-      // Reiniciar contador para el nuevo día
-      visits.count = 0;
-      visits.lastDate = today;
+  // Función para actualizar el contador en el servidor
+  async function updateVisitCounter() {
+    try {
+      // Primero registramos la visita
+      const response = await fetch('/api/visits', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) throw new Error('Error al registrar la visita');
+      
+      // Luego obtenemos el contador actualizado
+      const data = await response.json();
+      
+      // Actualizar la interfaz
+      document.getElementById('visit-count').textContent = `Visitas hoy: ${data.count}`;
+      
+    } catch (error) {
+      console.error('Error:', error);
+      document.getElementById('visit-count').textContent = 'Visitas: Error';
     }
+  }
+  
+  // Función para obtener solo el contador sin registrar una nueva visita
+  async function getVisitCount() {
+    try {
+      const response = await fetch('/api/visits');
+      if (!response.ok) throw new Error('Error al obtener las visitas');
+      
+      const data = await response.json();
+      document.getElementById('visit-count').textContent = `Visitas hoy: ${data.count}`;
+      
+    } catch (error) {
+      console.error('Error:', error);
+      document.getElementById('visit-count').textContent = 'Visitas: Error';
+    }
+  }
+  
+  // Usar sessionStorage para evitar múltiples conteos en la misma sesión
+  function isNewSession() {
+    const sessionKey = 'tigreAceroSession';
+    const hasSession = sessionStorage.getItem(sessionKey);
     
-    // Incrementar el contador
-    visits.count++;
-    
-    // Guardar en localStorage
-    localStorage.setItem('tigreAceroVisits', JSON.stringify(visits));
-    
-    // Actualizar la interfaz
-    document.getElementById('visit-count').textContent = `Visitas hoy: ${visits.count}`;
+    if (!hasSession) {
+      sessionStorage.setItem(sessionKey, 'active');
+      return true;
+    }
+    return false;
   }
   
   // Inicializar el contador cuando el DOM esté listo
-  document.addEventListener('DOMContentLoaded', updateVisitCounter);
+  document.addEventListener('DOMContentLoaded', () => {
+    if (isNewSession()) {
+      // Si es una nueva sesión, registrar visita
+      updateVisitCounter();
+    } else {
+      // Si no, solo obtener el contador actual
+      getVisitCount();
+    }
+  });
 }
 </script>
 
